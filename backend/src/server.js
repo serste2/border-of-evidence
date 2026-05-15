@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { geminiRouter } from './routes/gemini.js';
+import { eventsRouter } from './routes/events.js';
 
 const app = express();
 const port = Number(process.env.PORT || 8787);
@@ -19,6 +20,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/gemini', geminiRouter);
+app.use('/api/events', eventsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
