@@ -93,11 +93,9 @@ function App() {
       <section className="viewport" aria-label="Border of Evidence vertical slice">
         <div className="map-stage">
           <div className="map-canvas">
-            <img className="map-art-image" src={artManifest.base.src} alt="MAP-based evidence landscape scaffold" />
+            <img className="map-art-image" src={artManifest.base.src} alt="MAP 22 base artwork" />
             <div className="map-vignette" />
             <div className="map-grain" />
-            <div className="river-annotation">river border</div>
-            <div className="fixed-pivot">fixed method</div>
 
             {mapElements.map((element) => {
               const isActive = selectedElementId === element.id;
