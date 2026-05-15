@@ -1,4 +1,5 @@
 import { validateNewsArticle } from './geminiValidator.js';
+import { saveEvidenceEntry } from './archiveService.js';
 import { dispatchPulseEvent } from '../routes/events.js';
 
 const DEFAULT_FEEDS = [
@@ -16,6 +17,7 @@ let lastPollSummary = {
   fetched: 0,
   skipped: 0,
   validated: 0,
+  archived: 0,
   dispatched: 0,
   errors: [],
 };
@@ -76,6 +78,7 @@ export async function pollTerritorialNews(options = {}) {
     fetched: 0,
     skipped: 0,
     validated: 0,
+    archived: 0,
     dispatched: 0,
     errors: [],
   };
@@ -97,6 +100,14 @@ export async function pollTerritorialNews(options = {}) {
         summary.validated += 1;
 
         if (validation.relevant && validation.evidenceScore >= minScore) {
+          const archiveResult = await saveEvidenceEntry({
+            article,
+            validation,
+            source: 'seraphina_news_ingestion',
+          });
+
+          if (archiveResult.ok) summary.archived += 1;
+
           dispatchPulseEvent({
             element_id: validation.element_id,
             source: 'seraphina_news_ingestion',
@@ -110,6 +121,7 @@ export async function pollTerritorialNews(options = {}) {
               evidenceScore: validation.evidenceScore,
               domains: validation.domains,
               trigger_type: validation.trigger_type,
+              archived: archiveResult.ok,
             },
           });
           summary.dispatched += 1;
