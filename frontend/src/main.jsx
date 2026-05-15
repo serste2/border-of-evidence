@@ -1,36 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Archive, CircleDot, ExternalLink, Leaf, ShieldAlert, Trees } from 'lucide-react';
+import { Archive, CircleDot, ExternalLink, Leaf, ShieldAlert, Trees, Waves } from 'lucide-react';
 import './styles.css';
 import entries from './mock/entries.json';
 import sceneState from './mock/scene-state.json';
+import artManifest from './assets/art/manifest.json';
 
-const hotspots = [
-  {
-    id: 'extractive-pressure',
-    side: 'traditional',
-    label: 'Extractive pressure',
-    x: 30,
-    y: 58,
-    entryId: 'entry_trad_001',
-  },
-  {
-    id: 'soil-health-carbon',
-    side: 'regenerative',
-    label: 'Soil health & carbon',
-    x: 67,
-    y: 52,
-    entryId: 'entry_reg_001',
-  },
-];
+const hotspots = artManifest.hotspots;
 
 function getEntry(entryId) {
-  return entries.find((entry) => entry.id === entryId);
+  return entries.find((entry) => entry.id === entryId) || entries[0];
 }
 
 function App() {
-  const [selectedHotspotId, setSelectedHotspotId] = useState(hotspots[1].id);
-  const selectedHotspot = hotspots.find((hotspot) => hotspot.id === selectedHotspotId);
+  const [selectedHotspotId, setSelectedHotspotId] = useState('soil-health-carbon');
+  const selectedHotspot = hotspots.find((hotspot) => hotspot.id === selectedHotspotId) || hotspots[0];
   const selectedEntry = getEntry(selectedHotspot.entryId);
   const selectedCluster = useMemo(() => {
     return sceneState.clusters.find((cluster) => selectedEntry.entry_ids?.includes(cluster.id)) || sceneState.clusters.find((cluster) => cluster.topic === selectedEntry.topic);
@@ -40,10 +24,11 @@ function App() {
     <main className="app-shell">
       <section className="viewport" aria-label="Border of Evidence vertical slice">
         <div className="map-stage">
-          <div className="map-art" />
+          <img className="map-art-image" src={artManifest.base.src} alt="MAP-based evidence landscape scaffold" />
+          <div className="map-vignette" />
           <div className="map-grain" />
-          <div className="border-line" />
-          <div className="fixed-pivot">fixed pivot</div>
+          <div className="river-annotation">river border</div>
+          <div className="fixed-pivot">fixed method</div>
 
           {hotspots.map((hotspot) => (
             <button
@@ -53,7 +38,7 @@ function App() {
               onClick={() => setSelectedHotspotId(hotspot.id)}
               type="button"
             >
-              <CircleDot size={18} />
+              {hotspot.side === 'shared' ? <Waves size={18} /> : <CircleDot size={18} />}
               <span>{hotspot.label}</span>
             </button>
           ))}
@@ -61,7 +46,7 @@ function App() {
 
         <header className="hud top-hud">
           <div>
-            <p className="eyebrow">vertical slice / frontend</p>
+            <p className="eyebrow">vertical slice / MAP scaffold</p>
             <h1>Border of Evidence</h1>
           </div>
           <nav>
@@ -74,8 +59,8 @@ function App() {
 
         <aside className="hud side-panel">
           <div className="panel-kicker">
-            {selectedEntry.side_hint === 'regenerative' ? <Leaf size={16} /> : <ShieldAlert size={16} />}
-            {selectedEntry.side_hint}
+            {selectedHotspot.side === 'shared' ? <Waves size={16} /> : selectedEntry.side_hint === 'regenerative' ? <Leaf size={16} /> : <ShieldAlert size={16} />}
+            {selectedHotspot.side === 'shared' ? 'river / method' : selectedEntry.side_hint}
           </div>
           <h2>{selectedEntry.title}</h2>
           <p className="claim">{selectedEntry.claim_text}</p>
@@ -104,7 +89,7 @@ function App() {
             <div>
               <span>scene effect</span>
               <strong>{selectedEntry.visual_effect}</strong>
-              <small>{selectedCluster?.id || 'no cluster selected'}</small>
+              <small>{selectedCluster?.id || selectedHotspot.id}</small>
             </div>
           </div>
 
@@ -117,12 +102,12 @@ function App() {
 
         <footer className="hud bottom-hud">
           <div>
-            <span>pivot</span>
-            <strong>{sceneState.pivot.bottom_fixed ? 'fixed bottom' : 'unlocked'}</strong>
+            <span>border</span>
+            <strong>{artManifest.border.type}</strong>
           </div>
           <div>
-            <span>top shift</span>
-            <strong>{sceneState.pivot.top_shift_normalized}</strong>
+            <span>base art</span>
+            <strong>{artManifest.base.status}</strong>
           </div>
           <div>
             <span>min visible share</span>
