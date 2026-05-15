@@ -5,7 +5,7 @@ import './styles.css';
 import entries from './mock/entries.json';
 import sceneState from './mock/scene-state.json';
 import artManifest from './assets/art/manifest.json';
-import mapElements from './assets/art/map-elements.seed.json';
+import mapElements from './assets/art/map-elements.v1.json';
 
 const statusOrder = {
   seed: 1,
@@ -27,7 +27,7 @@ function formatTrigger(trigger) {
 }
 
 function App() {
-  const [selectedElementId, setSelectedElementId] = useState('river-border');
+  const [selectedElementId, setSelectedElementId] = useState('river-central-axis');
   const selectedElement = mapElements.find((element) => element.id === selectedElementId) || mapElements[0];
   const selectedEntry = findEntryForElement(selectedElement);
 
