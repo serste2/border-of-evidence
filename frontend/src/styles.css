@@ -384,6 +384,78 @@ dd {
   animation: pulseReveal 1.4s ease-in-out infinite;
 }
 
+.evidence-drawer {
+  left: clamp(10px, 2vw, 24px);
+  bottom: clamp(82px, 9vh, 104px);
+  width: min(360px, calc(100vw - 20px));
+  border-radius: 22px;
+  overflow: hidden;
+  z-index: 25;
+}
+
+.drawer-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 0;
+  background: rgba(0,0,0,0.18);
+  color: var(--cream);
+  cursor: pointer;
+  font-family: 'Roboto Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.drawer-toggle span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.drawer-toggle strong {
+  color: var(--yellow);
+}
+
+.drawer-body {
+  display: grid;
+  gap: 8px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 10px;
+}
+
+.evidence-item {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px;
+  background: rgba(0,0,0,0.22);
+}
+
+.evidence-item span,
+.evidence-item small,
+.drawer-empty {
+  color: var(--muted);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.evidence-item strong {
+  color: var(--cream);
+  font-family: 'Roboto', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.drawer-empty {
+  padding: 10px;
+}
+
 @keyframes pulseReveal {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
@@ -450,6 +522,10 @@ dd {
     max-height: 42vh;
   }
 
+  .evidence-drawer {
+    bottom: calc(42vh + 22px);
+  }
+
   .map-element::after {
     max-width: 44vw;
   }
@@ -461,6 +537,10 @@ dd {
   }
 
   .map-element::after {
+    display: none;
+  }
+
+  .evidence-drawer {
     display: none;
   }
 }
