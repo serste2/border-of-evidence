@@ -1,0 +1,69 @@
+{
+  "version": "0.1.0",
+  "base": {
+    "id": "map-base",
+    "src": "/src/assets/art/map-base.svg",
+    "description": "Temporary MAP-derived scaffold. Replace with Serena MAP final base asset.",
+    "type": "svg",
+    "status": "temporary"
+  },
+  "border": {
+    "id": "river-border",
+    "type": "river",
+    "description": "The river is the real border between the two worlds. CSS artificial border lines should be hidden or used only as subtle annotation.",
+    "path_hint": [
+      { "x": 47.5, "y": 0 },
+      { "x": 45.3, "y": 25.5 },
+      { "x": 48.6, "y": 50.5 },
+      { "x": 43.8, "y": 79.7 },
+      { "x": 48.9, "y": 100 }
+    ]
+  },
+  "layers": [
+    {
+      "id": "00-map-base",
+      "src": "/src/assets/art/map-base.svg",
+      "type": "background",
+      "side": "shared",
+      "status": "temporary"
+    }
+  ],
+  "hotspots": [
+    {
+      "id": "extractive-pressure",
+      "side": "traditional",
+      "label": "Extractive pressure",
+      "x": 29,
+      "y": 58,
+      "entryId": "entry_trad_001",
+      "topic": "synthetic_inputs"
+    },
+    {
+      "id": "river-border-method",
+      "side": "shared",
+      "label": "River border / method",
+      "x": 47,
+      "y": 64,
+      "entryId": "entry_river_001",
+      "topic": "governance"
+    },
+    {
+      "id": "soil-health-carbon",
+      "side": "regenerative",
+      "label": "Soil health & carbon",
+      "x": 68,
+      "y": 53,
+      "entryId": "entry_reg_001",
+      "topic": "soil"
+    },
+    {
+      "id": "solar-drone-monitoring",
+      "side": "regenerative",
+      "label": "Solar drones: fire / air / soil",
+      "x": 79,
+      "y": 31,
+      "entryId": "entry_energy_001",
+      "topic": "energy"
+    }
+  ]
+}
