@@ -1,0 +1,14 @@
+{
+  "task_type": "visual_layer_breakdown",
+  "issue": "#1",
+  "style_doc_summary": "Use Serena Stelitano's painterly, stratified, organic, critical MAP-style visual language. The left side is compressed and extractive. The right side is regenerative, living, and explorable.",
+  "current_site_notes": "The current frontend is a Vite React vertical slice with a temporary map-reference.svg, two hotspots, and a blurred HUD panel.",
+  "reference_image_notes": "Reference artwork shows a strong split between a dark, carved, extractive left side and a dense living regenerative right side, with water, vegetation, and stratified landforms.",
+  "constraints": [
+    "Return JSON only.",
+    "Create a layer and asset export plan, not final art.",
+    "Include integrated solar panels and solar drones monitoring fire, air, and soil.",
+    "Use percentage coordinates from 0 to 100.",
+    "Keep UI as annotation over artwork, not a generic SaaS dashboard."
+  ]
+}
