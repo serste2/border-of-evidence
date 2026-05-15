@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap');
+
 :root {
   color-scheme: dark;
   --bg: #090a0d;
@@ -10,7 +12,7 @@
   --shared: #5daeb0;
   --purple: #7b4bd6;
   --yellow: #f0c95a;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 * {
@@ -27,6 +29,7 @@ body,
 
 body {
   overflow: hidden;
+  font-family: 'Roboto', system-ui, sans-serif;
 }
 
 .app-shell {
@@ -47,9 +50,19 @@ body {
 
 .map-stage {
   position: absolute;
-  inset: 0;
+  inset: clamp(72px, 9vh, 106px) clamp(10px, 2vw, 24px) clamp(72px, 9vh, 106px);
   overflow: hidden;
+  display: grid;
+  place-items: center;
   background: #090a0d;
+}
+
+.map-canvas {
+  position: relative;
+  width: min(100%, calc((100vh - clamp(144px, 18vh, 212px)) * 1.619));
+  aspect-ratio: 1600 / 988;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .map-art-image {
@@ -57,7 +70,7 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   filter: saturate(1.12) contrast(1.05);
 }
@@ -66,16 +79,16 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 24% 60%, rgba(6, 6, 8, 0.5), transparent 34%),
-    radial-gradient(ellipse at 76% 52%, rgba(131, 214, 111, 0.12), transparent 36%),
-    linear-gradient(90deg, rgba(0,0,0,0.22), transparent 50%, rgba(255,255,255,0.03));
+    radial-gradient(ellipse at 24% 60%, rgba(6, 6, 8, 0.38), transparent 34%),
+    radial-gradient(ellipse at 76% 52%, rgba(131, 214, 111, 0.1), transparent 36%),
+    linear-gradient(90deg, rgba(0,0,0,0.16), transparent 50%, rgba(255,255,255,0.025));
   pointer-events: none;
 }
 
 .map-grain {
   position: absolute;
   inset: -20%;
-  opacity: 0.12;
+  opacity: 0.1;
   mix-blend-mode: overlay;
   background-image:
     repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,0.09) 2px 3px),
@@ -83,35 +96,35 @@ body {
   pointer-events: none;
 }
 
-.river-annotation {
+.river-annotation,
+.fixed-pivot {
   position: absolute;
+  padding: 7px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(8px, 0.65vw, 11px);
+  letter-spacing: 0.12em;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.river-annotation {
   left: 46.5%;
   top: 64%;
   transform: rotate(-72deg);
-  padding: 7px 10px;
   border: 1px solid rgba(217, 244, 231, 0.45);
-  border-radius: 999px;
   background: rgba(6, 18, 21, 0.36);
   color: rgba(217, 244, 231, 0.8);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  backdrop-filter: blur(12px);
 }
 
 .fixed-pivot {
-  position: absolute;
   left: 48%;
-  bottom: 24px;
+  bottom: 2.5%;
   transform: translateX(-50%);
-  padding: 8px 10px;
   border: 1px solid rgba(240, 201, 90, 0.55);
-  border-radius: 999px;
   color: var(--yellow);
   background: rgba(0,0,0,0.42);
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 0.12em;
 }
 
 .hud {
@@ -124,20 +137,22 @@ body {
 }
 
 .top-hud {
-  top: 24px;
-  left: 24px;
-  right: 24px;
+  top: clamp(10px, 2vw, 24px);
+  left: clamp(10px, 2vw, 24px);
+  right: clamp(10px, 2vw, 24px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 18px;
+  gap: 16px;
+  padding: clamp(10px, 1.25vw, 16px) clamp(12px, 1.4vw, 18px);
   border-radius: 22px;
 }
 
 .eyebrow {
   margin: 0 0 4px;
   color: var(--yellow);
-  font-size: 11px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(9px, 0.75vw, 11px);
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -149,26 +164,32 @@ p {
 }
 
 h1 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(28px, 3vw, 48px);
+  font-family: 'Roboto', system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(24px, 3vw, 48px);
   letter-spacing: -0.04em;
 }
 
 nav {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 14px;
   color: var(--muted);
-  font-size: 13px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(10px, 0.9vw, 13px);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .side-panel {
-  top: 128px;
-  right: 24px;
-  width: min(420px, calc(100vw - 48px));
+  top: clamp(92px, 14vh, 128px);
+  right: clamp(10px, 2vw, 24px);
+  width: min(420px, calc(100vw - 20px));
+  max-height: calc(100vh - clamp(174px, 22vh, 226px));
+  overflow: auto;
   border-radius: 28px;
-  padding: 22px;
+  padding: clamp(14px, 1.8vw, 22px);
 }
 
 .panel-kicker {
@@ -176,6 +197,7 @@ nav {
   align-items: center;
   gap: 8px;
   color: var(--regen);
+  font-family: 'Roboto Mono', monospace;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 12px;
@@ -183,8 +205,9 @@ nav {
 }
 
 .side-panel h2 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 30px;
+  font-family: 'Roboto', system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(22px, 2.2vw, 30px);
   line-height: 0.95;
   margin-bottom: 14px;
 }
@@ -192,7 +215,7 @@ nav {
 .claim {
   color: var(--muted);
   line-height: 1.5;
-  font-size: 14px;
+  font-size: clamp(12px, 1vw, 14px);
   margin-bottom: 18px;
 }
 
@@ -215,6 +238,7 @@ nav {
 
 dt {
   color: var(--muted);
+  font-family: 'Roboto Mono', monospace;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -238,6 +262,7 @@ dd {
 .trigger-list span {
   display: block;
   color: var(--muted);
+  font-family: 'Roboto Mono', monospace;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -266,7 +291,7 @@ dd {
   padding: 6px 8px;
   background: rgba(255,255,255,0.04);
   color: var(--cream);
-  font: inherit;
+  font-family: 'Roboto Mono', monospace;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -287,69 +312,87 @@ dd {
 }
 
 .map-element {
+  --marker-color: var(--cream);
   position: absolute;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+  width: clamp(13px, 1.25vw, 19px);
+  height: clamp(13px, 1.25vw, 19px);
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid color-mix(in srgb, var(--marker-color) 62%, transparent);
   border-radius: 999px;
-  padding: 7px 9px;
+  padding: 0;
   color: var(--cream);
-  background: rgba(0,0,0,0.42);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
   cursor: pointer;
   font: inherit;
-  font-size: 10px;
-  box-shadow: 0 0 0 7px rgba(255,255,255,0.025);
-  max-width: 190px;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.025);
+  z-index: 5;
+}
+
+.map-element::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%) scale(0.96);
+  max-width: min(260px, 34vw);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--marker-color) 44%, transparent);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: var(--cream);
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(9px, 0.75vw, 11px);
+  letter-spacing: 0.02em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.map-element:hover::after,
+.map-element:focus-visible::after,
+.map-element.active::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.map-element:nth-of-type(3n)::after {
+  left: auto;
+  right: calc(100% + 8px);
 }
 
 .element-label {
-  max-width: 135px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: none;
 }
 
 .element-pulse {
-  width: 10px;
-  height: 10px;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
   border-radius: 999px;
-  background: var(--cream);
-  box-shadow: 0 0 18px currentColor;
-  flex: 0 0 auto;
+  background: var(--marker-color);
+  box-shadow: 0 0 14px var(--marker-color);
 }
 
 .map-element.traditional {
-  border-color: rgba(224, 108, 69, 0.58);
-}
-
-.map-element.traditional .element-pulse {
-  color: var(--trad);
-  background: var(--trad);
+  --marker-color: var(--trad);
 }
 
 .map-element.regenerative {
-  border-color: rgba(136, 208, 103, 0.58);
-}
-
-.map-element.regenerative .element-pulse {
-  color: var(--regen);
-  background: var(--regen);
+  --marker-color: var(--regen);
 }
 
 .map-element.shared {
-  border-color: rgba(93, 174, 176, 0.72);
-}
-
-.map-element.shared .element-pulse {
-  color: var(--shared);
-  background: var(--shared);
+  --marker-color: var(--shared);
 }
 
 .map-element.seed {
-  opacity: 0.72;
+  opacity: 0.74;
 }
 
 .map-element.emerging {
@@ -358,16 +401,18 @@ dd {
 }
 
 .map-element.active,
-.map-element:hover {
+.map-element:hover,
+.map-element:focus-visible {
   opacity: 1;
-  z-index: 15;
-  box-shadow: 0 0 0 10px rgba(240, 201, 90, 0.12), 0 0 36px rgba(240, 201, 90, 0.42);
+  z-index: 20;
+  outline: none;
+  box-shadow: 0 0 0 7px rgba(240, 201, 90, 0.12), 0 0 30px rgba(240, 201, 90, 0.42);
 }
 
 .bottom-hud {
-  left: 24px;
-  right: 24px;
-  bottom: 24px;
+  left: clamp(10px, 2vw, 24px);
+  right: clamp(10px, 2vw, 24px);
+  bottom: clamp(10px, 2vw, 24px);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
@@ -385,6 +430,7 @@ dd {
 .bottom-hud span {
   display: block;
   color: var(--muted);
+  font-family: 'Roboto Mono', monospace;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -395,18 +441,45 @@ dd {
   margin-top: 6px;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 980px) {
   nav,
   .bottom-hud {
     display: none;
   }
 
-  .side-panel {
-    top: auto;
-    bottom: 24px;
+  .map-stage {
+    inset: 80px 0 0;
   }
 
-  .element-label {
+  .map-canvas {
+    width: 100vw;
+  }
+
+  .side-panel {
+    top: auto;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    max-height: 42vh;
+  }
+
+  .map-element::after {
+    max-width: 44vw;
+  }
+}
+
+@media (max-width: 620px) {
+  .top-hud {
+    align-items: flex-start;
+  }
+
+  .river-annotation,
+  .fixed-pivot {
+    display: none;
+  }
+
+  .map-element::after {
     display: none;
   }
 }
