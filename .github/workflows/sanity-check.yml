@@ -1,0 +1,37 @@
+name: Sanity check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check required files
+        run: |
+          test -f README.md
+          test -f docs/architecture.md
+          test -f docs/data-model.md
+          test -f docs/visual-style.md
+          test -f schemas/entry.schema.json
+          test -f schemas/source.schema.json
+          test -f schemas/scene-state.schema.json
+
+      - name: Validate JSON files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          for path in Path('.').rglob('*.json'):
+              with open(path, 'r', encoding='utf-8') as f:
+                  json.load(f)
+              print(f'valid JSON: {path}')
+          PY
