@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import { geminiRouter } from './routes/gemini.js';
 import { eventsRouter } from './routes/events.js';
+import { newsRouter } from './routes/news.js';
+import { startNewsPolling } from './services/newsConnector.js';
 
 const app = express();
 const port = Number(process.env.PORT || 8787);
@@ -16,11 +18,13 @@ app.get('/health', (_req, res) => {
     ok: true,
     service: 'border-of-evidence-backend',
     geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
+    seraphinaNewsPolling: process.env.SERAPHINA_NEWS_POLLING_ENABLED === 'true',
   });
 });
 
 app.use('/api/gemini', geminiRouter);
 app.use('/api/events', eventsRouter);
+app.use('/api/news', newsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -32,4 +36,5 @@ app.use((err, _req, res, _next) => {
 
 app.listen(port, () => {
   console.log(`Border of Evidence backend listening on http://localhost:${port}`);
+  startNewsPolling();
 });
