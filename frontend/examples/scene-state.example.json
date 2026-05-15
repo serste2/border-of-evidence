@@ -1,0 +1,19 @@
+{
+  "updated_at": "2026-05-15T00:00:00Z",
+  "pivot": {
+    "bottom_fixed": true,
+    "top_shift_normalized": 0.18,
+    "min_visible_share": 0.75
+  },
+  "clusters": [
+    {
+      "id": "soil_health_carbon",
+      "side": "regenerative",
+      "topic": "soil",
+      "score": 0.72,
+      "density": 0.68,
+      "effect": "addition",
+      "entry_ids": ["entry_001", "entry_002"]
+    }
+  ]
+}
