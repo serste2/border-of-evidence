@@ -1,0 +1,13 @@
+[
+  {
+    "id": "claimreview_example",
+    "name": "ClaimReview-compatible fact-check source",
+    "type": "fact_check",
+    "access_method": "api",
+    "base_url": "https://example.org/api",
+    "trust_tier": "high",
+    "update_frequency": "daily",
+    "enabled": false,
+    "notes": "Example source only. Replace with approved source."
+  }
+]
