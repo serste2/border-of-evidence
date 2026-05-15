@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/serste2/border-of-evidence/schemas/entry.schema.json",
+  "title": "Border of Evidence Entry",
+  "type": "object",
+  "required": [
+    "id",
+    "source_id",
+    "source_name",
+    "source_url",
+    "retrieved_at",
+    "title",
+    "event_type",
+    "topic",
+    "side_hint",
+    "evidence_quality",
+    "confidence",
+    "impact_score",
+    "visual_effect",
+    "review_status"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "source_id": { "type": "string" },
+    "source_name": { "type": "string" },
+    "source_url": { "type": "string", "format": "uri" },
+    "retrieved_at": { "type": "string", "format": "date-time" },
+    "published_at": { "type": ["string", "null"], "format": "date-time" },
+    "language": { "type": "string" },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "claim_text": { "type": ["string", "null"] },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "study",
+        "retraction",
+        "claim",
+        "funding_shift",
+        "policy_update",
+        "field_report",
+        "community_upload",
+        "overclaim_correction",
+        "dataset",
+        "forum_thread"
+      ]
+    },
+    "topic": {
+      "type": "string",
+      "enum": [
+        "soil",
+        "water",
+        "biodiversity",
+        "energy",
+        "governance",
+        "hunting",
+        "synthetic_inputs",
+        "animal_welfare",
+        "supply_chain",
+        "community"
+      ]
+    },
+    "side_hint": {
+      "type": "string",
+      "enum": ["traditional", "regenerative", "mixed", "neutral"]
+    },
+    "evidence_quality": { "type": "number", "minimum": 0, "maximum": 1 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "impact_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "visual_effect": {
+      "type": "string",
+      "enum": ["addition", "erosion", "transformation", "no_effect"]
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["pending", "approved", "rejected", "needs_human_review"]
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}
