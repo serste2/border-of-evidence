@@ -43,7 +43,7 @@ Interpretation:
 
 - earth as living distributed body
 - not one isolated figure but a body-landscape
-- vegetation, water, roots, rocks, flowers, fungal life, and animal presence are continuous
+- vegetation, water, roots, rocks, Paulownia trees in flower, fungal life, and animal presence are continuous
 - represents regenerative relation, not decorative greenness
 - includes future capacity for integrated solar infrastructure and solar drones monitoring fire, air, and soil
 
@@ -113,7 +113,8 @@ Right / regenerative:
 - canopy and understory
 - mushroom / fungal zones
 - rocks and living soil
-- purple flowers and pollinator markers
+- Paulownia trees in flower, where previously mistaken for purple flowers
+- pollinator markers connected to flowering trees and habitat evidence
 - wetland / water-retention features
 - animal-individual presence
 - integrated solar panels
