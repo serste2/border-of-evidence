@@ -96,37 +96,6 @@ body {
   pointer-events: none;
 }
 
-.river-annotation,
-.fixed-pivot {
-  position: absolute;
-  padding: 7px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  font-family: 'Roboto Mono', monospace;
-  font-size: clamp(8px, 0.65vw, 11px);
-  letter-spacing: 0.12em;
-  backdrop-filter: blur(12px);
-  pointer-events: none;
-}
-
-.river-annotation {
-  left: 46.5%;
-  top: 64%;
-  transform: rotate(-72deg);
-  border: 1px solid rgba(217, 244, 231, 0.45);
-  background: rgba(6, 18, 21, 0.36);
-  color: rgba(217, 244, 231, 0.8);
-}
-
-.fixed-pivot {
-  left: 48%;
-  bottom: 2.5%;
-  transform: translateX(-50%);
-  border: 1px solid rgba(240, 201, 90, 0.55);
-  color: var(--yellow);
-  background: rgba(0,0,0,0.42);
-}
-
 .hud {
   position: absolute;
   border: 1px solid var(--line);
@@ -489,11 +458,6 @@ dd {
 @media (max-width: 620px) {
   .top-hud {
     align-items: flex-start;
-  }
-
-  .river-annotation,
-  .fixed-pivot {
-    display: none;
   }
 
   .map-element::after {
