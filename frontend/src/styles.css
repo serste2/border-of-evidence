@@ -48,33 +48,33 @@ body {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: #090a0d;
 }
 
-.map-art {
+.map-art-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(1.12) contrast(1.05);
+}
+
+.map-vignette {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(115deg, rgba(32, 18, 17, 0.95) 0%, rgba(75, 39, 29, 0.82) 35%, rgba(35, 32, 39, 0.75) 48%, rgba(30, 72, 45, 0.8) 58%, rgba(69, 124, 62, 0.92) 100%),
-    url('/src/assets/map-reference.svg');
-  background-size: cover;
-  background-position: center;
-  filter: saturate(1.2) contrast(1.08);
-}
-
-.map-art::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 24% 60%, rgba(6, 6, 8, 0.7), transparent 34%),
-    radial-gradient(ellipse at 76% 52%, rgba(131, 214, 111, 0.18), transparent 36%),
-    linear-gradient(90deg, rgba(0,0,0,0.18), transparent 52%, rgba(255,255,255,0.04));
+    radial-gradient(ellipse at 24% 60%, rgba(6, 6, 8, 0.5), transparent 34%),
+    radial-gradient(ellipse at 76% 52%, rgba(131, 214, 111, 0.12), transparent 36%),
+    linear-gradient(90deg, rgba(0,0,0,0.22), transparent 50%, rgba(255,255,255,0.03));
+  pointer-events: none;
 }
 
 .map-grain {
   position: absolute;
   inset: -20%;
-  opacity: 0.16;
+  opacity: 0.12;
   mix-blend-mode: overlay;
   background-image:
     repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,0.09) 2px 3px),
@@ -82,21 +82,25 @@ body {
   pointer-events: none;
 }
 
-.border-line {
+.river-annotation {
   position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 4px;
-  height: 118%;
-  transform-origin: bottom center;
-  transform: translateX(-50%) rotate(6deg);
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(244, 206, 99, 0.9), rgba(255,255,255,0.25));
-  box-shadow: 0 0 18px rgba(240, 201, 90, 0.55), 0 0 44px rgba(123, 75, 214, 0.32);
+  left: 46.5%;
+  top: 64%;
+  transform: rotate(-72deg);
+  padding: 7px 10px;
+  border: 1px solid rgba(217, 244, 231, 0.45);
+  border-radius: 999px;
+  background: rgba(6, 18, 21, 0.36);
+  color: rgba(217, 244, 231, 0.8);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
 }
 
 .fixed-pivot {
   position: absolute;
-  left: 50%;
+  left: 48%;
   bottom: 24px;
   transform: translateX(-50%);
   padding: 8px 10px;
@@ -271,6 +275,10 @@ dd {
 
 .hotspot.traditional {
   border-color: rgba(224, 108, 69, 0.58);
+}
+
+.hotspot.shared {
+  border-color: rgba(93, 174, 176, 0.72);
 }
 
 .hotspot.active {
