@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Archive, CircleDot, ExternalLink, Leaf, ShieldAlert, Trees, Waves } from 'lucide-react';
+import { Archive, ExternalLink, Leaf, ShieldAlert, Trees, Waves } from 'lucide-react';
 import './styles.css';
 import entries from './mock/entries.json';
 import sceneState from './mock/scene-state.json';
@@ -40,25 +40,28 @@ function App() {
     <main className="app-shell">
       <section className="viewport" aria-label="Border of Evidence vertical slice">
         <div className="map-stage">
-          <img className="map-art-image" src={artManifest.base.src} alt="MAP-based evidence landscape scaffold" />
-          <div className="map-vignette" />
-          <div className="map-grain" />
-          <div className="river-annotation">river border</div>
-          <div className="fixed-pivot">fixed method</div>
+          <div className="map-canvas">
+            <img className="map-art-image" src={artManifest.base.src} alt="MAP-based evidence landscape scaffold" />
+            <div className="map-vignette" />
+            <div className="map-grain" />
+            <div className="river-annotation">river border</div>
+            <div className="fixed-pivot">fixed method</div>
 
-          {mapElements.map((element) => (
-            <button
-              key={element.id}
-              className={`map-element ${element.side} ${element.visual_state} ${selectedElementId === element.id ? 'active' : ''}`}
-              style={{ left: `${element.position.x}%`, top: `${element.position.y}%` }}
-              onClick={() => setSelectedElementId(element.id)}
-              type="button"
-              title={`${element.label} · ${element.category}`}
-            >
-              <span className="element-pulse" />
-              <span className="element-label">{element.label}</span>
-            </button>
-          ))}
+            {mapElements.map((element) => (
+              <button
+                key={element.id}
+                className={`map-element ${element.side} ${element.visual_state} ${selectedElementId === element.id ? 'active' : ''}`}
+                style={{ left: `${element.position.x}%`, top: `${element.position.y}%` }}
+                onClick={() => setSelectedElementId(element.id)}
+                type="button"
+                title={`${element.label} · ${element.category}`}
+                aria-label={`${element.label}: ${element.category}`}
+              >
+                <span className="element-pulse" />
+                <span className="element-label">{element.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <header className="hud top-hud">
