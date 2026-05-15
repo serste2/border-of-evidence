@@ -16,7 +16,7 @@ const statusOrder = {
   archived: 6,
 };
 
-const liveEventsUrl = import.meta.env.VITE_LIVE_EVENTS_URL || 'http://localhost:8787/api/events/live';
+const liveEventsUrl = import.meta.env.VITE_LIVE_EVENTS_URL || (import.meta.env.DEV ? 'http://localhost:8787/api/events/live' : '');
 
 function findEntryForElement(element) {
   return entries.find((entry) => {
@@ -28,11 +28,18 @@ function formatTrigger(trigger) {
   return trigger.replaceAll('_', ' ');
 }
 
+function formatScore(score) {
+  if (typeof score !== 'number') return null;
+  return `${Math.round(score * 100)}%`;
+}
+
 function App() {
   const [selectedElementId, setSelectedElementId] = useState('river-central-axis');
   const [hoveredElementId, setHoveredElementId] = useState(null);
   const [pulseElementId, setPulseElementId] = useState(null);
-  const [liveStatus, setLiveStatus] = useState('connecting');
+  const [liveStatus, setLiveStatus] = useState(liveEventsUrl ? 'connecting' : 'offline');
+  const [liveEvents, setLiveEvents] = useState([]);
+  const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
   const pulseQueueRef = useRef([]);
   const pulseTimeoutRef = useRef(null);
 
@@ -45,7 +52,10 @@ function App() {
   }, [selectedEntry]);
 
   useEffect(() => {
-    if (!liveEventsUrl) return undefined;
+    if (!liveEventsUrl) {
+      setLiveStatus('offline');
+      return undefined;
+    }
 
     const eventSource = new EventSource(liveEventsUrl);
 
@@ -59,6 +69,7 @@ function App() {
         const payload = JSON.parse(event.data);
         if (payload?.trigger === 'pulse_reveal' && payload.element_id) {
           pulseQueueRef.current.push(payload.element_id);
+          setLiveEvents((currentEvents) => [payload, ...currentEvents].slice(0, 10));
           processPulseQueue();
         }
       } catch (_error) {
@@ -190,6 +201,28 @@ function App() {
               source / archive entry
               <ExternalLink size={14} />
             </a>
+          ) : null}
+        </aside>
+
+        <aside className={`hud evidence-drawer ${isEvidenceDrawerOpen ? 'open' : ''}`} aria-label="live evidence drawer">
+          <button type="button" className="drawer-toggle" onClick={() => setIsEvidenceDrawerOpen((isOpen) => !isOpen)}>
+            <span>live evidence</span>
+            <strong>{liveEvents.length}</strong>
+          </button>
+          {isEvidenceDrawerOpen ? (
+            <div className="drawer-body">
+              {liveEvents.length ? liveEvents.map((liveEvent, index) => {
+                const evidence = liveEvent.payload || {};
+                const score = formatScore(evidence.evidenceScore);
+                return (
+                  <article className="evidence-item" key={`${liveEvent.timestamp}-${liveEvent.element_id}-${index}`}>
+                    <span>{liveEvent.element_id}</span>
+                    <strong>{evidence.title || liveEvent.source || 'pulse reveal'}</strong>
+                    <small>{evidence.trigger_type || liveEvent.source || 'sse'}{score ? ` · ${score}` : ''}</small>
+                  </article>
+                );
+              }) : <p className="drawer-empty">waiting for validated evidence</p>}
+            </div>
           ) : null}
         </aside>
 
