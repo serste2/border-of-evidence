@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Archive, ExternalLink, Leaf, ShieldAlert, Trees, Waves } from 'lucide-react';
+import { TimeController } from './components/TimeController.jsx';
 import './styles.css';
 import entries from './mock/entries.json';
 import sceneState from './mock/scene-state.json';
@@ -17,6 +18,7 @@ const statusOrder = {
 };
 
 const liveEventsUrl = import.meta.env.VITE_LIVE_EVENTS_URL || (import.meta.env.DEV ? 'http://localhost:8787/api/events/live' : '');
+const archiveApiUrl = import.meta.env.VITE_ARCHIVE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787/api/query/archive' : '');
 
 function findEntryForElement(element) {
   return entries.find((entry) => {
@@ -33,6 +35,10 @@ function formatScore(score) {
   return `${Math.round(score * 100)}%`;
 }
 
+function getArchivedElementCount(archiveArrangement, elementId) {
+  return archiveArrangement?.element_counts?.[elementId] || 0;
+}
+
 function App() {
   const [selectedElementId, setSelectedElementId] = useState('river-central-axis');
   const [hoveredElementId, setHoveredElementId] = useState(null);
@@ -40,11 +46,16 @@ function App() {
   const [liveStatus, setLiveStatus] = useState(liveEventsUrl ? 'connecting' : 'offline');
   const [liveEvents, setLiveEvents] = useState([]);
   const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
+  const [currentRange, setCurrentRange] = useState('1_month');
+  const [isArchiveLoading, setIsArchiveLoading] = useState(false);
+  const [archiveArrangement, setArchiveArrangement] = useState(null);
+  const [archiveError, setArchiveError] = useState(null);
   const pulseQueueRef = useRef([]);
   const pulseTimeoutRef = useRef(null);
 
   const selectedElement = mapElements.find((element) => element.id === selectedElementId) || mapElements[0];
   const selectedEntry = findEntryForElement(selectedElement);
+  const selectedArchiveElement = archiveArrangement?.elements?.find((element) => element.element_id === selectedElement.id);
 
   const selectedCluster = useMemo(() => {
     if (!selectedEntry) return null;
@@ -99,6 +110,55 @@ function App() {
     }, 4200);
   }
 
+  async function handleRangeChange(nextRange) {
+    setCurrentRange(nextRange);
+    setArchiveError(null);
+
+    if (!archiveApiUrl) {
+      setArchiveError('archive backend offline');
+      return;
+    }
+
+    setIsArchiveLoading(true);
+
+    try {
+      const url = new URL(archiveApiUrl);
+      url.searchParams.set('range', nextRange);
+      const response = await fetch(url.toString());
+      const payload = await response.json();
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || 'archive query failed');
+      }
+
+      setArchiveArrangement(payload);
+      setLiveEvents((currentEvents) => [
+        ...payload.entries.slice(0, 10).map((entry) => ({
+          trigger: 'archive_arrangement',
+          element_id: entry.element_id,
+          timestamp: payload.generatedAt,
+          source: 'archive_query',
+          payload: {
+            title: entry.title,
+            url: entry.url,
+            source: entry.source,
+            published_at: entry.published_at,
+            summary: entry.summary,
+            reason: entry.reason,
+            evidenceScore: entry.evidence_score,
+            domains: entry.domains,
+            trigger_type: entry.trigger_type,
+          },
+        })),
+        ...currentEvents,
+      ].slice(0, 10));
+    } catch (error) {
+      setArchiveError(error.message);
+    } finally {
+      setIsArchiveLoading(false);
+    }
+  }
+
   return (
     <main className="app-shell">
       <section className="viewport" aria-label="Border of Evidence vertical slice">
@@ -111,20 +171,22 @@ function App() {
             {mapElements.map((element) => {
               const isActive = selectedElementId === element.id;
               const isPulsing = pulseElementId === element.id;
+              const archiveCount = getArchivedElementCount(archiveArrangement, element.id);
+              const isArchiveActive = archiveCount > 0;
 
               return (
                 <button
                   key={element.id}
-                  className={`map-element ${element.side} ${element.visual_state} ${isActive ? 'active' : ''} ${isPulsing ? 'pulse-reveal' : ''}`}
-                  style={{ left: `${element.position.x}%`, top: `${element.position.y}%` }}
+                  className={`map-element ${element.side} ${element.visual_state} ${isActive ? 'active' : ''} ${isPulsing ? 'pulse-reveal' : ''} ${isArchiveActive ? 'archive-active' : ''}`}
+                  style={{ left: `${element.position.x}%`, top: `${element.position.y}%`, '--archive-count': archiveCount }}
                   onClick={() => setSelectedElementId(element.id)}
                   onMouseEnter={() => setHoveredElementId(element.id)}
                   onMouseLeave={() => setHoveredElementId(null)}
                   onFocus={() => setHoveredElementId(element.id)}
                   onBlur={() => setHoveredElementId(null)}
                   type="button"
-                  title={`${element.label} · ${element.category}`}
-                  aria-label={`${element.label}: ${element.category}`}
+                  title={`${element.label} · ${element.category}${archiveCount ? ` · ${archiveCount} archive links` : ''}`}
+                  aria-label={`${element.label}: ${element.category}${archiveCount ? ` · ${archiveCount} archive links` : ''}`}
                 >
                   <span className="element-pulse" />
                   <span className="element-label">{element.label}</span>
@@ -146,6 +208,8 @@ function App() {
             <a>Forum</a>
           </nav>
         </header>
+
+        <TimeController currentRange={currentRange} onRangeChange={handleRangeChange} isLoading={isArchiveLoading} />
 
         <aside className="hud side-panel">
           <div className="panel-kicker">
@@ -170,8 +234,8 @@ function App() {
               <dd>{selectedElement.visual_state}</dd>
             </div>
             <div>
-              <dt>order</dt>
-              <dd>{statusOrder[selectedElement.visual_state] || 0}</dd>
+              <dt>archive links</dt>
+              <dd>{selectedArchiveElement?.count || 0}</dd>
             </div>
           </dl>
 
@@ -183,6 +247,17 @@ function App() {
               ))}
             </div>
           </div>
+
+          {selectedArchiveElement?.scraped_links?.length ? (
+            <div className="archive-links">
+              <span>scraped links</span>
+              {selectedArchiveElement.scraped_links.slice(0, 5).map((link) => (
+                <a key={link.id || link.url} href={link.url} target="_blank" rel="noreferrer">
+                  {link.title}
+                </a>
+              ))}
+            </div>
+          ) : null}
 
           <div className="cluster-card">
             <Trees size={18} />
@@ -206,7 +281,7 @@ function App() {
 
         <aside className={`hud evidence-drawer ${isEvidenceDrawerOpen ? 'open' : ''}`} aria-label="live evidence drawer">
           <button type="button" className="drawer-toggle" onClick={() => setIsEvidenceDrawerOpen((isOpen) => !isOpen)}>
-            <span>live evidence</span>
+            <span>{archiveError || 'live evidence'}</span>
             <strong>{liveEvents.length}</strong>
           </button>
           {isEvidenceDrawerOpen ? (
@@ -228,16 +303,16 @@ function App() {
 
         <footer className="hud bottom-hud">
           <div>
-            <span>border</span>
-            <strong>{artManifest.border.type}</strong>
+            <span>archive range</span>
+            <strong>{currentRange.replace('_', ' ')}</strong>
           </div>
           <div>
             <span>live events</span>
             <strong>{liveStatus}</strong>
           </div>
           <div>
-            <span>seed elements</span>
-            <strong>{mapElements.length}</strong>
+            <span>archive entries</span>
+            <strong>{archiveArrangement?.summary?.entries || 0}</strong>
           </div>
           <div>
             <span>selected</span>

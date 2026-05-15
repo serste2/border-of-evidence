@@ -12,6 +12,7 @@
   --shared: #5daeb0;
   --purple: #7b4bd6;
   --yellow: #f0c95a;
+  --magenta: #ff0032;
   font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -151,6 +152,56 @@ nav {
   letter-spacing: 0.08em;
 }
 
+.time-controller {
+  position: absolute;
+  top: clamp(86px, 11vh, 112px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 0, 50, 0.58);
+  background: rgba(13, 5, 17, 0.76);
+  color: var(--cream);
+  backdrop-filter: blur(12px);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.time-controller span {
+  color: var(--muted);
+  font-size: clamp(9px, 0.78vw, 11px);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.time-controller div {
+  display: flex;
+  gap: 4px;
+}
+
+.time-controller button {
+  border: 0;
+  background: transparent;
+  color: var(--cream);
+  padding: 5px 8px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(10px, 0.85vw, 13px);
+  cursor: pointer;
+}
+
+.time-controller button.active {
+  background: var(--magenta);
+  color: #0d0511;
+  font-weight: 700;
+}
+
+.time-controller button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .side-panel {
   top: clamp(92px, 14vh, 128px);
   right: clamp(10px, 2vw, 24px);
@@ -198,7 +249,8 @@ nav {
 .metadata-grid div,
 .cluster-card,
 .source-link,
-.trigger-list {
+.trigger-list,
+.archive-links {
   border: 1px solid var(--line);
   background: rgba(0,0,0,0.22);
   border-radius: 18px;
@@ -228,7 +280,8 @@ dd {
 
 .cluster-card span,
 .cluster-card small,
-.trigger-list span {
+.trigger-list span,
+.archive-links span {
   display: block;
   color: var(--muted);
   font-family: 'Roboto Mono', monospace;
@@ -243,7 +296,8 @@ dd {
   text-transform: uppercase;
 }
 
-.trigger-list {
+.trigger-list,
+.archive-links {
   margin-bottom: 12px;
 }
 
@@ -264,6 +318,23 @@ dd {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.archive-links {
+  display: grid;
+  gap: 8px;
+}
+
+.archive-links a {
+  color: var(--cream);
+  font-family: 'Roboto', system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.archive-links a:hover {
+  color: var(--yellow);
 }
 
 .element-note {
@@ -324,7 +395,8 @@ dd {
 .map-element:hover::after,
 .map-element:focus-visible::after,
 .map-element.active::after,
-.map-element.pulse-reveal::after {
+.map-element.pulse-reveal::after,
+.map-element.archive-active::after {
   opacity: 1;
   transform: translateY(-50%) scale(1);
 }
@@ -373,11 +445,17 @@ dd {
 .map-element.active,
 .map-element:hover,
 .map-element:focus-visible,
-.map-element.pulse-reveal {
+.map-element.pulse-reveal,
+.map-element.archive-active {
   opacity: 1;
   z-index: 20;
   outline: none;
   box-shadow: 0 0 0 7px rgba(240, 201, 90, 0.12), 0 0 30px rgba(240, 201, 90, 0.42);
+}
+
+.map-element.archive-active .element-pulse {
+  width: calc(7px + min(var(--archive-count), 8) * 1px);
+  height: calc(7px + min(var(--archive-count), 8) * 1px);
 }
 
 .map-element.pulse-reveal .element-pulse {
@@ -513,6 +591,12 @@ dd {
     width: 100vw;
   }
 
+  .time-controller {
+    top: 82px;
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+  }
+
   .side-panel {
     top: auto;
     left: 10px;
@@ -534,6 +618,13 @@ dd {
 @media (max-width: 620px) {
   .top-hud {
     align-items: flex-start;
+  }
+
+  .time-controller {
+    left: 10px;
+    right: 10px;
+    transform: none;
+    justify-content: space-between;
   }
 
   .map-element::after {
