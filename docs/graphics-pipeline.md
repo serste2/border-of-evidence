@@ -1,81 +1,78 @@
 # Graphics Pipeline
 
-The project can use Gemini to generate and validate visual assets, but the base visual language remains Serena Stelitano's MAP-style artwork.
+The project must use only Serena Stelitano's provided MAP 22 image as the visual source of truth unless Serena explicitly provides additional artwork.
 
 ## Principle
 
-Gemini should not replace Serena's authorship. It should operate as a production assistant for:
+Do not generate alternative versions of MAP 22. Do not reinterpret, repaint, complete, stylize, simplify, or replace the artwork with synthetic scenery.
 
+AI tools may assist only with:
+
+- visual extraction
 - layer breakdown
-- asset list generation
-- stylistic consistency checks
-- placeholder generation
-- export planning
-- hotspot and coordinate suggestions
-- visual QA against the MAP reference
+- coordinate mapping
+- element taxonomy
+- data-association planning
+- hotspot placement
+- UI annotation planning
+- visual QA against the exact provided MAP 22 image
 
-The final visual system must preserve the painterly, stratified, irregular, organic, critical quality defined in `docs/visual-style.md`.
+The final visual system must preserve the exact painterly, stratified, irregular, organic, critical quality of the provided MAP 22 file.
 
 ## Source of visual truth
 
-Primary reference:
+Primary and only visual reference for the current phase:
 
-- Serena's MAP drawing
+- `MAP_22.png`, provided by Serena in the working conversation
 
-In the frontend, the temporary `map-reference.svg` should be replaced by a real MAP-derived asset set.
+The frontend should eventually use a MAP-derived asset set extracted from this exact file. The temporary `map-base.svg` is only a technical scaffold and must not be treated as visual direction.
 
-The border between the two worlds is the river, not a generic CSS line. The current artificial border line should become either hidden or converted into a subtle annotation of the river path.
+The border between the two worlds is the river inside MAP 22, not a generic CSS line, scale, balance needle, or generated divider.
 
 ## Recommended asset structure
 
 ```text
 frontend/src/assets/art/
-  map-base.png
+  map-base.png                  # exact user-provided MAP 22 base or approved cropped/base state
   layers/
-    00-background.png
-    01-extractive-ground.png
-    02-river-border.png
-    03-regenerative-ground.png
-    04-canopy.png
-    05-foreground.png
-    06-hotspot-guides.png
-  generated/
-    regen-solar-roof-01.png
-    regen-solar-drone-fire-01.png
-    regen-solar-drone-air-01.png
-    regen-solar-drone-soil-01.png
+    00-base-terrain.png          # extracted from MAP 22 only
+    01-left-earth-body.png       # extracted from MAP 22 only
+    02-river-border.png          # extracted from MAP 22 only
+    03-right-earth-body.png      # extracted from MAP 22 only
+    04-existing-canopy.png       # extracted from MAP 22 only
+    05-existing-water-system.png # extracted from MAP 22 only
   manifest.json
+  map-elements.seed.json
 ```
 
 ## Gemini workflow
 
-1. Serena provides MAP reference and any new drawing references.
-2. Gemini generates a JSON layer plan.
-3. Serena approves, edits, or redraws core elements.
-4. Gemini generates secondary graphics or placeholder variants from approved prompts.
-5. Assets are exported as transparent PNG or SVG.
-6. Codex / frontend integrates the assets using `manifest.json`.
-7. Gemini validates screenshots against the reference style.
+1. Serena provides MAP 22.
+2. Gemini analyzes only the provided MAP 22 image.
+3. Gemini returns JSON describing elements, coordinates, visual roles, and possible data associations.
+4. Serena corrects any wrong visual reading.
+5. ChatGPT updates schemas, docs, manifest, and frontend logic.
+6. Codex / frontend integrates extracted assets and coordinates.
+7. Gemini validates screenshots against the exact MAP 22 reference.
 
-## What Gemini can create
+## What Gemini can produce
 
-- temporary graphics
-- variations of integrated solar panels
-- solar drones for fire / air / soil monitoring
-- UI-adjacent icons
-- fact-card graphics
-- gallery placeholder cards
-- environmental props
-- hotspot badges
+- JSON extraction of visible elements
+- coordinate map
+- element list
+- proposed data triggers
+- suggested crop/layer boundaries
+- visual QA comments
 
-## What should stay Serena-led
+## What Gemini must not produce in this phase
 
-- the main MAP base
-- the river-border composition
-- the emotional structure of the two worlds
-- final painterly texture and line quality
-- major symbolic elements
+- new landscape art
+- alternate MAP versions
+- invented props
+- generated solar panels or drones placed as final art
+- synthetic replacements for Serena's drawing
+- generic dashboard graphics pretending to be MAP 22
 
 ## Frontend rule
 
-The frontend should treat graphics as layered assets and read their positions from `manifest.json`. The UI must remain an annotation system over the artwork, not a generic SaaS dashboard.
+The frontend should treat MAP 22 as a target-state evidence map. Elements become active through data, but the visual vocabulary must come from the provided artwork. UI remains an annotation system over the artwork.
