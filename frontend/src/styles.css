@@ -354,7 +354,8 @@ dd {
 
 .map-element:hover::after,
 .map-element:focus-visible::after,
-.map-element.active::after {
+.map-element.active::after,
+.map-element.pulse-reveal::after {
   opacity: 1;
   transform: translateY(-50%) scale(1);
 }
@@ -402,11 +403,27 @@ dd {
 
 .map-element.active,
 .map-element:hover,
-.map-element:focus-visible {
+.map-element:focus-visible,
+.map-element.pulse-reveal {
   opacity: 1;
   z-index: 20;
   outline: none;
   box-shadow: 0 0 0 7px rgba(240, 201, 90, 0.12), 0 0 30px rgba(240, 201, 90, 0.42);
+}
+
+.map-element.pulse-reveal .element-pulse {
+  animation: pulseReveal 1.4s ease-in-out infinite;
+}
+
+@keyframes pulseReveal {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 14px var(--marker-color);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.85);
+    box-shadow: 0 0 30px var(--marker-color), 0 0 48px rgba(240, 201, 90, 0.42);
+  }
 }
 
 .bottom-hud {
