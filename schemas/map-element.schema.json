@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/serste2/border-of-evidence/schemas/map-element.schema.json",
+  "title": "MAP 22 Visual Element",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "side",
+    "zone",
+    "category",
+    "description",
+    "data_triggers",
+    "visual_state",
+    "position"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "label": { "type": "string" },
+    "side": { "type": "string", "enum": ["traditional", "regenerative", "shared"] },
+    "zone": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": [
+        "earth_body",
+        "river_border",
+        "animal_welfare",
+        "soil_structure",
+        "water_system",
+        "biodiversity",
+        "energy_monitoring",
+        "policy_governance",
+        "economic_flow",
+        "claim_correction",
+        "community_practice",
+        "natural_event"
+      ]
+    },
+    "description": { "type": "string" },
+    "data_triggers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "study",
+          "retraction",
+          "claim",
+          "funding_shift",
+          "policy_update",
+          "field_report",
+          "community_upload",
+          "overclaim_correction",
+          "dataset",
+          "court_ruling",
+          "natural_event",
+          "sensor_signal"
+        ]
+      }
+    },
+    "visual_state": {
+      "type": "string",
+      "enum": ["seed", "emerging", "active", "dense", "corrected", "archived"]
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 100 },
+        "y": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "asset": {
+      "type": ["string", "null"]
+    },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}
