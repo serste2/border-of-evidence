@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Archive, ExternalLink, Leaf, ShieldAlert, Trees, Waves } from 'lucide-react';
 import './styles.css';
@@ -16,6 +16,8 @@ const statusOrder = {
   archived: 6,
 };
 
+const liveEventsUrl = import.meta.env.VITE_LIVE_EVENTS_URL || 'http://localhost:8787/api/events/live';
+
 function findEntryForElement(element) {
   return entries.find((entry) => {
     return entry.side_hint === element.side || entry.topic === element.data_triggers?.[0] || entry.topic === element.category;
@@ -28,6 +30,12 @@ function formatTrigger(trigger) {
 
 function App() {
   const [selectedElementId, setSelectedElementId] = useState('river-central-axis');
+  const [hoveredElementId, setHoveredElementId] = useState(null);
+  const [pulseElementId, setPulseElementId] = useState(null);
+  const [liveStatus, setLiveStatus] = useState('connecting');
+  const pulseQueueRef = useRef([]);
+  const pulseTimeoutRef = useRef(null);
+
   const selectedElement = mapElements.find((element) => element.id === selectedElementId) || mapElements[0];
   const selectedEntry = findEntryForElement(selectedElement);
 
@@ -35,6 +43,50 @@ function App() {
     if (!selectedEntry) return null;
     return sceneState.clusters.find((cluster) => selectedEntry.entry_ids?.includes(cluster.id)) || sceneState.clusters.find((cluster) => cluster.topic === selectedEntry.topic);
   }, [selectedEntry]);
+
+  useEffect(() => {
+    if (!liveEventsUrl) return undefined;
+
+    const eventSource = new EventSource(liveEventsUrl);
+
+    eventSource.addEventListener('open', () => setLiveStatus('connected'));
+    eventSource.addEventListener('error', () => setLiveStatus('offline'));
+    eventSource.addEventListener('connected', () => setLiveStatus('connected'));
+    eventSource.addEventListener('heartbeat', () => setLiveStatus('connected'));
+
+    eventSource.addEventListener('pulse', (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload?.trigger === 'pulse_reveal' && payload.element_id) {
+          pulseQueueRef.current.push(payload.element_id);
+          processPulseQueue();
+        }
+      } catch (_error) {
+        setLiveStatus('event_error');
+      }
+    });
+
+    return () => {
+      eventSource.close();
+      clearTimeout(pulseTimeoutRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hoveredElementId) processPulseQueue();
+  }, [hoveredElementId]);
+
+  function processPulseQueue() {
+    if (hoveredElementId || pulseElementId || pulseQueueRef.current.length === 0) return;
+
+    const nextElementId = pulseQueueRef.current.shift();
+    setPulseElementId(nextElementId);
+
+    pulseTimeoutRef.current = setTimeout(() => {
+      setPulseElementId(null);
+      processPulseQueue();
+    }, 4200);
+  }
 
   return (
     <main className="app-shell">
@@ -47,20 +99,29 @@ function App() {
             <div className="river-annotation">river border</div>
             <div className="fixed-pivot">fixed method</div>
 
-            {mapElements.map((element) => (
-              <button
-                key={element.id}
-                className={`map-element ${element.side} ${element.visual_state} ${selectedElementId === element.id ? 'active' : ''}`}
-                style={{ left: `${element.position.x}%`, top: `${element.position.y}%` }}
-                onClick={() => setSelectedElementId(element.id)}
-                type="button"
-                title={`${element.label} · ${element.category}`}
-                aria-label={`${element.label}: ${element.category}`}
-              >
-                <span className="element-pulse" />
-                <span className="element-label">{element.label}</span>
-              </button>
-            ))}
+            {mapElements.map((element) => {
+              const isActive = selectedElementId === element.id;
+              const isPulsing = pulseElementId === element.id;
+
+              return (
+                <button
+                  key={element.id}
+                  className={`map-element ${element.side} ${element.visual_state} ${isActive ? 'active' : ''} ${isPulsing ? 'pulse-reveal' : ''}`}
+                  style={{ left: `${element.position.x}%`, top: `${element.position.y}%` }}
+                  onClick={() => setSelectedElementId(element.id)}
+                  onMouseEnter={() => setHoveredElementId(element.id)}
+                  onMouseLeave={() => setHoveredElementId(null)}
+                  onFocus={() => setHoveredElementId(element.id)}
+                  onBlur={() => setHoveredElementId(null)}
+                  type="button"
+                  title={`${element.label} · ${element.category}`}
+                  aria-label={`${element.label}: ${element.category}`}
+                >
+                  <span className="element-pulse" />
+                  <span className="element-label">{element.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -140,8 +201,8 @@ function App() {
             <strong>{artManifest.border.type}</strong>
           </div>
           <div>
-            <span>target state</span>
-            <strong>MAP 22</strong>
+            <span>live events</span>
+            <strong>{liveStatus}</strong>
           </div>
           <div>
             <span>seed elements</span>
