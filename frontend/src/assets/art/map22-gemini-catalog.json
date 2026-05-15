@@ -1,0 +1,359 @@
+{
+  "map_title": "MAP 22",
+  "global_reading": {
+    "summary": "Un'opera pittorica divisa nettamente in due macro-aree da un corso d'acqua diagonale. A sinistra prevale una logica estrattiva, industriale e intensiva con tonalità marroni, scure e geometrie rigide. A destra domina una logica rigenerativa, biodiverse e idrologica ricca di vegetazione verde, alberi fioriti e corsi d'acqua ramificati. Entrambe le sezioni integrano figure antropomorfe formate dalla terra stessa.",
+    "river_border_reading": "Il fiume funge da confine naturale e barriera geopolitica tra i due modelli territoriali. Lungo il suo corso si nota un ponte fortificato o sbarrato che blocca la transizione fluida, fungendo da cerniera critica e asse di frizione per il passaggio di mezzi industriali.",
+    "left_earth_figure_reading": "Una figura monumentale antropomorfa fusa con il suolo roccioso e argilloso. Presenta cavità interne simili a miniere o bunker, strutture stradali che ne solcano la testa e un braccio destro intrappolato sotto il ponte dei camion, il quale sfocia in un campo allagato e geometrico.",
+    "right_earth_figure_reading": "Una figura di profilo modellata dalle colline verdi e dai boschi. Una sua mano si estende verso il primo piano per accogliere, canalizzare e proteggere il sistema di ruscelli e specchi d'acqua, simboleggiando una gestione relazionale e simbiotica delle risorse idriche.",
+    "uncertainties": [
+      "L'esatta natura delle piccole sagome rettangolari viola posizionate sul lato sinistro, interpretabili come container, veicoli industriali o moduli abitativi.",
+      "La specie esatta dei volatili scuri in volo sopra il confine del fiume, sebbene la forma ricordi uccelli rapaci o migratori."
+    ]
+  },
+  "fixed_base_elements": [
+    {
+      "id": "river-central-axis",
+      "label": "Asse del Fiume di Confine",
+      "side": "shared",
+      "zone": "centro",
+      "literal_description": "Un corso d'acqua sinuoso che attraversa la mappa diagonalmente dall'alto al centro fino in basso a destra, dividendo cromaticamente e strutturalmente l'immagine.",
+      "role_in_composition": "Separatore compositivo primario e confine logico tra i due sistemi.",
+      "position": { "x": 48, "y": 50 },
+      "confidence": 1.0
+    },
+    {
+      "id": "left-industrial-plateau",
+      "label": "Altopiano Agricolo Intensivo",
+      "side": "traditional",
+      "zone": "alto-sinistra",
+      "literal_description": "Un'area suddivisa in parcelle geometriche regolari e file di colture monoculturali inquadrate da confini netti.",
+      "role_in_composition": "Rappresentazione visiva della pianificazione territoriale rigida e della sottomissione della terra a griglie industriali.",
+      "position": { "x": 25, "y": 15 },
+      "confidence": 0.95
+    },
+    {
+      "id": "right-forested-hills",
+      "label": "Colline Boschive Biodiverse",
+      "side": "regenerative",
+      "zone": "alto-destra",
+      "literal_description": "Un fitto manto forestale caratterizzato da alberi di diverse dimensioni, forme e sfumature di verde, senza linee di demarcazione geometriche.",
+      "role_in_composition": "Sfondo strutturale del sistema rigenerativo e polmone della biodiversità.",
+      "position": { "x": 75, "y": 20 },
+      "confidence": 0.95
+    },
+    {
+      "id": "central-divide-bridge",
+      "label": "Ponte di Connessione Industriale",
+      "side": "traditional",
+      "zone": "centro-alto",
+      "literal_description": "Una struttura a ponte stradale fortificata o recintata che scavalca il letto del fiume, attraversata da piccoli blocchi geometrici.",
+      "role_in_composition": "Punto di strozzatura e infrastruttura logistica di transito tra le due sponde.",
+      "position": { "x": 45, "y": 28 },
+      "confidence": 0.9
+    },
+    {
+      "id": "rocky-canyon-wall",
+      "label": "Parete Rocciosa del Canyon",
+      "side": "traditional",
+      "zone": "centro-sinistra",
+      "literal_description": "Una parete scoscesa in toni marroni e grigi che delimita il corpo di terra sinistro, mostrando strati geologici esposti.",
+      "role_in_composition": "Definizione volumetrica della figura di terra estrattiva e barriera fisica.",
+      "position": { "x": 12, "y": 55 },
+      "confidence": 0.85
+    },
+    {
+      "id": "wetland-braided-streams",
+      "label": "Sistema di Ruscelli Intrecciati",
+      "side": "regenerative",
+      "zone": "basso-destra",
+      "literal_description": "Una rete ramificata di canali d'acqua poco profondi intervallati da rocce, canneti e zone umide nel quadrante inferiore destro.",
+      "role_in_composition": "Rappresentazione del bacino idrologico sano e non canalizzato artificialmente.",
+      "position": { "x": 72, "y": 80 },
+      "confidence": 1.0
+    }
+  ],
+  "data_driven_elements": [
+    {
+      "id": "monoculture-grid-density",
+      "label": "Densità delle Colture a Griglia",
+      "side": "traditional",
+      "zone": "alto-sinistra",
+      "category": "soil_structure",
+      "literal_description": "Punti ordinati disposti in file parallele perfette all'interno dei campi superiori sinistri.",
+      "interpretive_reading": "Indicatori visivi di pratiche di agricoltura intensiva, meccanizzazione spinta e potenziale impoverimento del suolo.",
+      "position": { "x": 38, "y": 10 },
+      "associated_data_domains": ["agribusiness_yield", "soil_organic_matter", "pesticide_use_reports"],
+      "possible_data_triggers": ["dataset", "field_report"],
+      "example_source_types": ["Rapporti ISPRA", "Registri dei trattamenti fitosanitari"],
+      "confidence": 0.95
+    },
+    {
+      "id": "open-pit-mining-shaft",
+      "label": "Pozzo di Estrazione o Cavità Sotterranea",
+      "side": "traditional",
+      "zone": "basso-sinistra",
+      "category": "extraction_infrastructure",
+      "literal_description": "Un'apertura scura a forma di caverna artificiale nella parte inferiore della massa terrestre sinistra, sormontata da una struttura con ruote o tralicci.",
+      "interpretive_reading": "Attività estrattiva sotterranea o mineraria che perfora direttamente il corpo antropomorfo della terra.",
+      "position": { "x": 22, "y": 88 },
+      "associated_data_domains": ["mining_licenses", "subsurface_disruption", "heavy_metal_leaching"],
+      "possible_data_triggers": ["court_ruling", "sensor_signal"],
+      "example_source_types": ["Concessioni minerarie ministeriali", "Sensori sismici locali"],
+      "confidence": 0.9
+    },
+    {
+      "id": "purple-paulownia-blossom-1",
+      "label": "Isola di Fioritura di Paulownia Nord",
+      "side": "regenerative",
+      "zone": "centro-destra",
+      "category": "biodiversity",
+      "literal_description": "Una macchia di vegetazione dal colore viola saturo situata a mezza altezza sulla sponda rigenerativa.",
+      "interpretive_reading": "Presenza di Paulownia in fiore, indice di riforestazione rapida o colture mirate alla cattura di carbonio e biomassa.",
+      "position": { "x": 86, "y": 48 },
+      "associated_data_domains": ["carbon_sequestration_rates", "pollinator_density", "agroforestry_mapping"],
+      "possible_data_triggers": ["study", "community_upload"],
+      "example_source_types": ["Studi accademici agroforestali", "Rilevazioni iNaturalist"],
+      "confidence": 1.0
+    },
+    {
+      "id": "purple-paulownia-blossom-2",
+      "label": "Isola di Fioritura di Paulownia Sud",
+      "side": "regenerative",
+      "zone": "centro-basso-destra",
+      "category": "biodiversity",
+      "literal_description": "Una seconda area cespugliosa o arborea di colore viola acceso vicino al margine boscoso centrale.",
+      "position": { "x": 56, "y": 59 },
+      "interpretive_reading": "Hotspot di fioritura stagionale e diversificazione della flora mellifera nell'ecosistema relazionale.",
+      "associated_data_domains": ["botanical_surveys", "phenology_tracking"],
+      "possible_data_triggers": ["field_report", "natural_event"],
+      "example_source_types": ["Monitoraggi fenologici regionali"],
+      "confidence": 1.0
+    },
+    {
+      "id": "industrial-truck-convoy",
+      "label": "Convoglio di Mezzi Pesanti",
+      "side": "traditional",
+      "zone": "centro-alto",
+      "category": "economic_flow",
+      "literal_description": "Piccoli rettangoli violacei allineati in fila indiana sopra e nei pressi della struttura stradale/ponte.",
+      "interpretive_reading": "Flusso logistico di merci estrattive o input chimici in transito attraverso l'infrastruttura di confine.",
+      "position": { "x": 42, "y": 28 },
+      "associated_data_domains": ["freight_traffic_logs", "fossil_fuel_consumption"],
+      "possible_data_triggers": ["sensor_signal", "field_report"],
+      "example_source_types": ["Registri di transito merci pesanti"],
+      "confidence": 0.85
+    },
+    {
+      "id": "military-hunting-vehicle",
+      "label": "Veicolo da Caccia o Pattugliamento Militare",
+      "side": "traditional",
+      "zone": "basso-sinistra-estremo",
+      "category": "hunting_control",
+      "literal_description": "Un mezzo cingolato o gommato scuro dotato di un'appendice simile a una torretta o cannone nell'angolo inferiore sinistro.",
+      "interpretive_reading": "Logiche di controllo violento, bracconaggio organizzato o agri-hunting militarizzato del territorio.",
+      "position": { "x": 6, "y": 91 },
+      "associated_data_domains": ["poaching_infractions", "firearm_licenses", "wildlife_mortality"],
+      "possible_data_triggers": ["court_ruling", "field_report"],
+      "example_source_types": ["Verbali dei Carabinieri Forestali", "Segnalazioni di bracconaggio"],
+      "confidence": 0.9
+    },
+    {
+      "id": "semi-flooded-field",
+      "label": "Campo Semi-Allagato di Scarico",
+      "side": "traditional",
+      "zone": "centro-sinistra-alto",
+      "category": "water_system",
+      "literal_description": "Un'area pianeggiante dai toni grigio-azzurri situata alla destra della testa della figura estrattiva, dove la terra sembra liquefarsi.",
+      "interpretive_reading": "Ristagno idrico causato da compattazione del suolo o sversamento superficiale di acque reflue industriali.",
+      "position": { "x": 36, "y": 24 },
+      "associated_data_domains": ["water_table_pollution", "soil_compaction_index"],
+      "possible_data_triggers": ["claim", "dataset"],
+      "example_source_types": ["Analisi Arpa delle acque superficiali"],
+      "confidence": 0.85
+    },
+    {
+      "id": "birds-of-prey-migration",
+      "label": "Volatili di Confine in Volo",
+      "side": "shared",
+      "zone": "centro-alto",
+      "category": "biodiversity",
+      "literal_description": "Sagome nere di grandi uccelli ad ali spiegate sospese sopra la linea divisoria del fiume.",
+      "interpretive_reading": "Indicatori biologici mobili che ignorano i confini antropici, specchio della salute dei corridoi migratori.",
+      "position": { "x": 48, "y": 25 },
+      "associated_data_domains": ["avian_migration_routes", "biodiversity_indices"],
+      "possible_data_triggers": ["natural_event", "community_upload"],
+      "example_source_types": ["Database Lipu", "Osservazioni ornitologiche condivise"],
+      "confidence": 0.95
+    },
+    {
+      "id": "riparian-buffer-strip",
+      "label": "Fascia Boschiva Ripariale",
+      "side": "regenerative",
+      "zone": "centro",
+      "category": "water_system",
+      "literal_description": "La striscia di fitta vegetazione verde scuro che costeggia direttamente la riva destra del fiume.",
+      "interpretive_reading": "Zona cuscinetto naturale essenziale per la prevenzione dell'erosione arginale e la filtrazione dei nutrienti di ruscellamento.",
+      "position": { "x": 51, "y": 45 },
+      "associated_data_domains": ["river_bank_stability", "nitrate_retention_capacity"],
+      "possible_data_triggers": ["study", "policy_update"],
+      "example_source_types": ["Piani di Gestione del Bacino Idrografico"],
+      "confidence": 0.9
+    },
+    {
+      "id": "terraced-polyculture-slopes",
+      "label": "Terrazzamenti e Policolture",
+      "side": "regenerative",
+      "zone": "alto-destra-centro",
+      "category": "community_practice",
+      "literal_description": "Piccole aree verdi ondulate coltivate a ridosso delle colline con forme morbide e integrate.",
+      "interpretive_reading": "Pratiche di agricoltura ed ecologia relazionale, modellamento agroecologico del versante per trattenere l'umidità.",
+      "position": { "x": 72, "y": 40 },
+      "associated_data_domains": ["agroecology_adoption", "soil_erosion_mitigation"],
+      "possible_data_triggers": ["community_upload", "field_report"],
+      "example_source_types": ["Mappature di progetti di Permacultura"],
+      "confidence": 0.85
+    },
+    {
+      "id": "dark-landslide-scar",
+      "label": "Frana o Ferita del Suolo",
+      "side": "traditional",
+      "zone": "centro-sinistra",
+      "category": "natural_event",
+      "literal_description": "Una ramificazione scura a forma di crepaccio o colata di fango che si estende sul fianco sinistro della figura di terra.",
+      "interpretive_reading": "Dissesto idrogeologico acuto provocato dalla perdita di struttura del suolo e dal sovraccarico infrastrutturale.",
+      "position": { "x": 16, "y": 48 },
+      "associated_data_domains": ["landslide_risk_maps", "soil_shear_strength"],
+      "possible_data_triggers": ["natural_event", "court_ruling"],
+      "example_source_types": ["Piani di Assetto Idrogeologico (PAI)"],
+      "confidence": 0.9
+    },
+    {
+      "id": "subsurface-industrial-bunker",
+      "label": "Bunker o Camera di Controllo Sotterranea",
+      "side": "traditional",
+      "zone": "centro-sinistra-basso",
+      "category": "extraction_infrastructure",
+      "literal_description": "Una piccola apertura geometrica quadrata provvista di luce o emissione biancastra, incassata nel ventre della montagna estrattiva.",
+      "interpretive_reading": "Posto di monitoraggio industriale o centro operativo di controllo delle risorse sotterranee espropriate.",
+      "position": { "x": 23, "y": 69 },
+      "associated_data_domains": ["industrial_emissions", "subsurface_infrastructure_permits"],
+      "possible_data_triggers": ["claim", "sensor_signal"],
+      "example_source_types": ["Ispezioni tecniche industriali"],
+      "confidence": 0.8
+    },
+    {
+      "id": "wetland-reed-beds",
+      "label": "Canneti e Filtri Biologici Umidi",
+      "side": "regenerative",
+      "zone": "basso-destra",
+      "category": "water_system",
+      "literal_description": "Ciuffi di vegetazione lineare verde chiaro disposti a isolotti dentro i laghetti e canali in primo piano a destra.",
+      "interpretive_reading": "Sistemi di fitodepurazione naturale attivi che migliorano la qualità chimico-fisica delle acque correnti.",
+      "position": { "x": 78, "y": 88 },
+      "associated_data_domains": ["phytoremediation_efficiency", "water_quality_index"],
+      "possible_data_triggers": ["sensor_signal", "study"],
+      "example_source_types": ["Analisi ecotossicologiche delle università"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ancient-forest-canopy",
+      "label": "Canopia della Foresta Vetusta",
+      "side": "regenerative",
+      "zone": "alto-destra-estremo",
+      "category": "biodiversity",
+      "literal_description": "Massa continua e densa di alberi ad alto fusto localizzata nell'estremo margine superiore destro dell'immagine.",
+      "interpretive_reading": "Riserva forestale intatta ad alto valore di conservazione, serbatoio stabile di biomassa e funghi micorrizici.",
+      "position": { "x": 92, "y": 18 },
+      "associated_data_domains": ["old_growth_forest_registry", "habitat_connectivity"],
+      "possible_data_triggers": ["policy_update", "dataset"],
+      "example_source_types": ["Rete Natura 2000", "Inventario Forestale Nazionale"],
+      "confidence": 0.9
+    },
+    {
+      "id": "soil-crust-erosion",
+      "label": "Crosta Superficiale Erosa",
+      "side": "traditional",
+      "zone": "centro-sinistra",
+      "category": "soil_structure",
+      "literal_description": "Striature ocra e beige slavate prive di copertura vegetale che occupano la sezione centrale della figura sinistra.",
+      "interpretive_reading": "Erosione laminare del suolo causata dal dilavamento meteorico su terreni agricoli lasciati nudi e privi di radici.",
+      "position": { "x": 10, "y": 32 },
+      "associated_data_domains": ["soil_loss_tonnes_hectare", "desertification_risk"],
+      "possible_data_triggers": ["field_report", "study"],
+      "example_source_types": ["Modelli di erosione RUSLE del JRC"],
+      "confidence": 0.85
+    }
+  ],
+  "special_figural_readings": [
+    {
+      "id": "trapped-arm-dissolution",
+      "label": "Il Braccio Intrappolato nel Fango",
+      "side": "traditional",
+      "literal_description": "Il prolungamento destro della figura di terra sinistra passa sotto la struttura stradale del ponte e perde consistenza, sfumando nel campo allagato geometrico.",
+      "interpretive_reading": "Simbolo della forza lavoro territoriale bloccata e sacrificata dalle logiche infrastrutturali, dove il corpo fisico si dissolve nella palude dell'agricoltura contrattualizzata.",
+      "position": { "x": 42, "y": 20 },
+      "confidence": 0.9
+    },
+    {
+      "id": "left-earth-titan-head",
+      "label": "Testa del Titano Estrattivo",
+      "side": "traditional",
+      "literal_description": "Struttura rocciosa centrale a forma di volto rugoso o teschio che guarda verso l'alto, sormontata da griglie agricole.",
+      "interpretive_reading": "La personificazione del dolore del paesaggio antropizzato, una mente compressa e intrappolata all'interno della geografia dello sfruttamento.",
+      "position": { "x": 28, "y": 30 },
+      "confidence": 0.95
+    },
+    {
+      "id": "right-nymph-profile",
+      "label": "Profilo della Ninfa Rigenerativa",
+      "side": "regenerative",
+      "literal_description": "Linea collinare verdeggiante che delinea chiaramente un profilo facciale umano rivolto verso il confine fluviale.",
+      "interpretive_reading": "L'intelligenza ecologica del luogo incorporata nel rilievo orografico, un guardiano geomorfologico che osserva il confine.",
+      "position": { "x": 65, "y": 35 },
+      "confidence": 0.9
+    },
+    {
+      "id": "water-channeling-hand",
+      "label": "La Mano Idrologica Custode",
+      "side": "regenerative",
+      "literal_description": "Una conformazione di terra a forma di mano aperta che si inserisce tra i sassi in basso a destra, arginando e accogliendo l'acqua.",
+      "interpretive_reading": "Rappresentazione plastica della cura idrologica: l'intervento umano non distruttivo che raccoglie, rallenta e favorisce l'infiltrazione dell'acqua nel bacino.",
+      "position": { "x": 64, "y": 70 },
+      "confidence": 0.95
+    }
+  ],
+  "priority_elements_for_first_activation": [
+    {
+      "id": "river-central-axis",
+      "reason": "Costituisce la spina dorsale spaziale del progetto; sbloccare questo elemento permette di calibrare lo scostamento visivo ed i layer di separazione tra i due mondi."
+    },
+    {
+      "id": "left-earth-titan-head",
+      "reason": "Rappresenta l'ancora visiva principale della sezione sinistra e permette di mappare i flussi di dati sulle criticità del suolo direttamente sul volto del titano."
+    },
+    {
+      "id": "water-channeling-hand",
+      "reason": "Elemento cruciale per testare l'interazione dei dati idrologici sani (portate, indici biologici) legandoli ad un'interfaccia gestuale e protettiva."
+    },
+    {
+      "id": "purple-paulownia-blossom-1",
+      "reason": "Ottimo marker cromatico isolato per validare l'attivazione di dati agroforestali e metriche di cattura CO2 tramite eventi di caricamento della community."
+    },
+    {
+      "id": "military-hunting-vehicle",
+      "reason": "Punto d'innesco ideale per far confluire dati conflittuali come denunce di bracconaggio o violazioni delle aree protette, attivando overlay grafici rigidi."
+    },
+    {
+      "id": "central-divide-bridge",
+      "reason": "Snodo infrastrutturale critico per visualizzare i dati sui flussi economici e di trasporto merci pesanti che collegano o forzano i due ecosistemi."
+    },
+    {
+      "id": "dark-landslide-scar",
+      "reason": "Consente l'attivazione immediata tramite feed di eventi naturali estremi o allerte della protezione civile, mostrando visivamente il collasso idrogeologico."
+    },
+    {
+      "id": "wetland-braided-streams",
+      "reason": "Fornisce la base dati per il monitoraggio dello stato di salute delle acque, utile per testare la ricezione di segnali da sensori IoT o analisi chimiche esterne."
+    }
+  ]
+}
