@@ -8,12 +8,13 @@ const DEFAULT_FEEDS = [
   'https://www.euractiv.com/sections/energy-environment/feed/',
 ];
 
-const seenArticleKeys = new Set();
+const seenArticles = new Map();
 let pollTimer = null;
 let pollInProgress = false;
 let lastPollAt = null;
 let lastPollSummary = {
   fetched: 0,
+  skipped: 0,
   validated: 0,
   dispatched: 0,
   errors: [],
@@ -46,12 +47,15 @@ export function stopNewsPolling() {
 }
 
 export function getNewsPollingStatus() {
+  pruneSeenArticles();
+
   return {
     enabled: process.env.SERAPHINA_NEWS_POLLING_ENABLED === 'true',
     running: Boolean(pollTimer),
     lastPollAt,
     lastPollSummary,
-    seen: seenArticleKeys.size,
+    seen: seenArticles.size,
+    dedupeTtlHours: getDedupeTtlMs() / 3600000,
   };
 }
 
@@ -62,6 +66,7 @@ export async function pollTerritorialNews(options = {}) {
 
   pollInProgress = true;
   lastPollAt = new Date().toISOString();
+  pruneSeenArticles();
 
   const feeds = getFeedList(options.feeds);
   const minScore = Number(process.env.SERAPHINA_MIN_EVIDENCE_SCORE || 0.6);
@@ -69,6 +74,7 @@ export async function pollTerritorialNews(options = {}) {
 
   const summary = {
     fetched: 0,
+    skipped: 0,
     validated: 0,
     dispatched: 0,
     errors: [],
@@ -79,9 +85,12 @@ export async function pollTerritorialNews(options = {}) {
     summary.fetched = articles.length;
 
     for (const article of articles) {
-      const key = article.url || `${article.source}:${article.title}`;
-      if (seenArticleKeys.has(key)) continue;
-      seenArticleKeys.add(key);
+      const key = buildArticleKey(article);
+      if (seenArticles.has(key)) {
+        summary.skipped += 1;
+        continue;
+      }
+      seenArticles.set(key, Date.now());
 
       try {
         const validation = await validateNewsArticle(article);
@@ -119,6 +128,7 @@ export async function pollTerritorialNews(options = {}) {
 
 export async function fetchLatestArticles(feeds, maxArticles = 12) {
   const articles = [];
+  const fetchErrors = [];
 
   for (const feedUrl of feeds) {
     try {
@@ -136,10 +146,17 @@ export async function fetchLatestArticles(feeds, maxArticles = 12) {
       const text = await response.text();
       articles.push(...parseFeedItems(text, feedUrl));
     } catch (error) {
-      lastPollSummary.errors.push({ feed: feedUrl, error: error.message });
+      fetchErrors.push({ feed: feedUrl, error: error.message });
     }
 
     if (articles.length >= maxArticles) break;
+  }
+
+  if (fetchErrors.length) {
+    lastPollSummary = {
+      ...lastPollSummary,
+      errors: [...(lastPollSummary.errors || []), ...fetchErrors].slice(-20),
+    };
   }
 
   return articles.slice(0, maxArticles);
@@ -162,14 +179,54 @@ function parseFeedItems(xml, sourceUrl) {
   const atomMatches = [...xml.matchAll(/<entry[\s\S]*?<\/entry>/gi)];
   const chunks = itemMatches.length ? itemMatches.map((match) => match[0]) : atomMatches.map((match) => match[0]);
 
-  return chunks.map((chunk) => ({
-    title: decodeXml(readTag(chunk, 'title')),
-    summary: decodeXml(readTag(chunk, 'description') || readTag(chunk, 'summary') || readTag(chunk, 'content')),
-    content: decodeXml(readTag(chunk, 'content:encoded') || readTag(chunk, 'content') || readTag(chunk, 'description')),
-    url: decodeXml(readTag(chunk, 'link')) || readAtomLink(chunk),
-    published_at: decodeXml(readTag(chunk, 'pubDate') || readTag(chunk, 'published') || readTag(chunk, 'updated')) || null,
+  return chunks.map((chunk) => normalizeArticle(chunk, sourceUrl)).filter((article) => article.title);
+}
+
+function normalizeArticle(chunk, sourceUrl) {
+  const title = decodeXml(readTag(chunk, 'title'));
+  const summary = decodeXml(readTag(chunk, 'description') || readTag(chunk, 'summary') || readTag(chunk, 'content'));
+  const content = decodeXml(readTag(chunk, 'content:encoded') || readTag(chunk, 'content') || readTag(chunk, 'description'));
+  const url = normalizeUrl(decodeXml(readTag(chunk, 'link')) || readAtomLink(chunk));
+  const publishedAt = normalizeDate(decodeXml(readTag(chunk, 'pubDate') || readTag(chunk, 'published') || readTag(chunk, 'updated')));
+
+  return {
+    title,
+    summary,
+    content,
+    url,
+    published_at: publishedAt,
     source: sourceUrl,
-  })).filter((article) => article.title);
+  };
+}
+
+function buildArticleKey(article) {
+  const stableValue = article.url || `${article.source}:${article.title}:${article.published_at || ''}`;
+  return simpleHash(stableValue.toLowerCase().trim());
+}
+
+function simpleHash(value) {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash << 5) - hash) + value.charCodeAt(index);
+    hash |= 0;
+  }
+  return String(hash);
+}
+
+function pruneSeenArticles() {
+  const ttlMs = getDedupeTtlMs();
+  const now = Date.now();
+
+  for (const [key, seenAt] of seenArticles.entries()) {
+    if (now - seenAt > ttlMs) {
+      seenArticles.delete(key);
+    }
+  }
+}
+
+function getDedupeTtlMs() {
+  const ttlHours = Number(process.env.SERAPHINA_DEDUPE_TTL_HOURS || 48);
+  return ttlHours * 60 * 60 * 1000;
 }
 
 function readTag(chunk, tagName) {
@@ -182,6 +239,16 @@ function readTag(chunk, tagName) {
 function readAtomLink(chunk) {
   const match = chunk.match(/<link[^>]+href=["']([^"']+)["'][^>]*>/i);
   return match?.[1] || '';
+}
+
+function normalizeUrl(url = '') {
+  return url.trim();
+}
+
+function normalizeDate(value = '') {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toISOString();
 }
 
 function decodeXml(value = '') {
