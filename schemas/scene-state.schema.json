@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/serste2/border-of-evidence/schemas/scene-state.schema.json",
+  "title": "Border of Evidence Scene State",
+  "type": "object",
+  "required": ["updated_at", "pivot", "clusters"],
+  "properties": {
+    "updated_at": { "type": "string", "format": "date-time" },
+    "pivot": {
+      "type": "object",
+      "required": ["bottom_fixed", "top_shift_normalized", "min_visible_share"],
+      "properties": {
+        "bottom_fixed": { "type": "boolean" },
+        "top_shift_normalized": { "type": "number", "minimum": -1, "maximum": 1 },
+        "min_visible_share": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "side", "topic", "score", "density", "effect"],
+        "properties": {
+          "id": { "type": "string" },
+          "side": { "type": "string", "enum": ["traditional", "regenerative"] },
+          "topic": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "density": { "type": "number", "minimum": 0, "maximum": 1 },
+          "effect": { "type": "string", "enum": ["addition", "erosion", "transformation", "stable"] },
+          "entry_ids": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
