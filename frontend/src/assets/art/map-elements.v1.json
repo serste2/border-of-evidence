@@ -13,17 +13,30 @@
     "notes": "Elemento fisso. Non sostituire con una linea CSS o con un ago visivo."
   },
   {
-    "id": "left-earth-titan-body",
-    "label": "Corpo della terra compressa",
+    "id": "left-landslide-infected-water-body",
+    "label": "Frana attorno allo spurgo infetto",
     "side": "traditional",
-    "zone": "intero settore sinistro / figura sdraiata e scavata",
-    "category": "earth_body",
-    "description": "Figura antropomorfa di terra compressa, scavata, attraversata da infrastrutture e cavità. Rappresenta il corpo-base dell'approccio estrattivo.",
-    "data_triggers": ["claim", "funding_shift", "policy_update", "field_report", "court_ruling", "dataset"],
+    "zone": "intero settore sinistro / corpo franato e sassoso",
+    "category": "water_system",
+    "description": "La zona sinistra non è una generica area estrattiva: è una frana, con suolo sassoso attorno a uno spurgo di acqua infetta che struttura il corpo dell'agricoltura tradizionale.",
+    "data_triggers": ["dataset", "field_report", "natural_event", "sensor_signal", "court_ruling", "policy_update"],
     "visual_state": "seed",
-    "position": { "x": 28, "y": 47 },
+    "position": { "x": 26, "y": 56 },
     "asset": null,
-    "notes": "Elemento fisso di base. Include testa, torso, cave, tagli e posture di costrizione."
+    "notes": "Correzione user: leggere il lato sinistro come frana + acqua infetta, non come mining generico."
+  },
+  {
+    "id": "infected-water-outflow",
+    "label": "Spurgo di acqua infetta",
+    "side": "traditional",
+    "zone": "suolo sassoso della frana a sinistra",
+    "category": "water_system",
+    "description": "Punto di acqua degradata o infetta intorno al quale si organizza la frana sassosa del lato tradizionale.",
+    "data_triggers": ["dataset", "sensor_signal", "field_report", "court_ruling", "natural_event"],
+    "visual_state": "seed",
+    "position": { "x": 20, "y": 63 },
+    "asset": null,
+    "notes": "Ambito: qualità acqua, contaminazione, scarichi, reflui, patogeni, ristagno e dissesto."
   },
   {
     "id": "right-earth-relational-body",
@@ -104,43 +117,43 @@
     "notes": "Dettaglio confermato dalla user. Deve restare catalogato."
   },
   {
-    "id": "dark-landslide-scar",
-    "label": "Frana o ferita del suolo",
-    "side": "traditional",
-    "zone": "fianco sinistro della figura estrattiva",
-    "category": "natural_event",
-    "description": "Ramificazione scura simile a crepaccio, colata o ferita sul fianco della massa di terra sinistra.",
-    "data_triggers": ["natural_event", "dataset", "field_report", "court_ruling", "sensor_signal"],
-    "visual_state": "seed",
-    "position": { "x": 16, "y": 48 },
-    "asset": null,
-    "notes": "Collega dissesto, erosione, perdita di struttura, alluvioni e collasso idrogeologico."
-  },
-  {
-    "id": "open-pit-mining-shaft",
-    "label": "Cavità estrattiva sotterranea",
-    "side": "traditional",
-    "zone": "basso sinistra",
-    "category": "extraction_infrastructure",
-    "description": "Apertura scura nel ventre della massa sinistra, leggibile come cavità, miniera, bunker o infrastruttura sotterranea.",
-    "data_triggers": ["court_ruling", "policy_update", "dataset", "sensor_signal", "field_report"],
-    "visual_state": "seed",
-    "position": { "x": 22, "y": 88 },
-    "asset": null,
-    "notes": "Ambito: estrazione, perforazione, concessioni, impatti sotterranei."
-  },
-  {
-    "id": "military-hunting-vehicle",
-    "label": "Veicolo di caccia / controllo",
+    "id": "tractor-with-shooter",
+    "label": "Trattore con figura che spara",
     "side": "traditional",
     "zone": "estremo basso sinistra",
     "category": "hunting_control",
-    "description": "Mezzo scuro nell'angolo inferiore sinistro, leggibile come veicolo di controllo, caccia o pattugliamento del territorio.",
+    "description": "Il mezzo in basso a sinistra è un trattore. Dal finestrino si sporge una figura che spara con un fucile verso gli uccelli neri in volo.",
     "data_triggers": ["court_ruling", "field_report", "policy_update", "community_upload", "claim"],
     "visual_state": "seed",
     "position": { "x": 6, "y": 91 },
     "asset": null,
-    "notes": "Ambito: caccia, bracconaggio, pressione faunistica, conflitti d'uso."
+    "notes": "Correzione user: non è un mezzo militare. È un trattore con figura armata; collegare a caccia, spari, controllo faunistico e conflitti d'uso."
+  },
+  {
+    "id": "shot-black-bird",
+    "label": "Uccello nero colpito",
+    "side": "shared",
+    "zone": "fascia alta, traiettoria da destra a sinistra",
+    "category": "hunting_control",
+    "description": "Uno degli uccelli neri che attraversano la mappa in volo è colpito dal fucile sparato dal trattore.",
+    "data_triggers": ["court_ruling", "field_report", "community_upload", "policy_update", "natural_event"],
+    "visual_state": "seed",
+    "position": { "x": 46, "y": 25 },
+    "asset": null,
+    "notes": "Elemento di caccia. Collegare a abbattimenti, disturbo, fauna selvatica, divieti e segnalazioni."
+  },
+  {
+    "id": "falling-black-bird",
+    "label": "Uccello nero che cade",
+    "side": "traditional",
+    "zone": "alto centro-sinistra, dopo l'uccello colpito",
+    "category": "hunting_control",
+    "description": "L'altro uccello nero, più verso sinistra rispetto a quello colpito, sta già cadendo dal cielo.",
+    "data_triggers": ["court_ruling", "field_report", "community_upload", "policy_update", "natural_event"],
+    "visual_state": "seed",
+    "position": { "x": 39, "y": 27 },
+    "asset": null,
+    "notes": "Elemento di caccia. Usare per evidenziare conseguenze dirette degli spari e pressione sulla fauna."
   },
   {
     "id": "industrial-truck-convoy",
