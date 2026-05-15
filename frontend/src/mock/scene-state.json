@@ -1,0 +1,28 @@
+{
+  "updated_at": "2026-05-15T10:05:00Z",
+  "pivot": {
+    "bottom_fixed": true,
+    "top_shift_normalized": 0.18,
+    "min_visible_share": 0.75
+  },
+  "clusters": [
+    {
+      "id": "synthetic_inputs_pressure",
+      "side": "traditional",
+      "topic": "synthetic_inputs",
+      "score": 0.58,
+      "density": 0.7,
+      "effect": "erosion",
+      "entry_ids": ["entry_trad_001"]
+    },
+    {
+      "id": "soil_health_carbon",
+      "side": "regenerative",
+      "topic": "soil",
+      "score": 0.72,
+      "density": 0.68,
+      "effect": "addition",
+      "entry_ids": ["entry_reg_001"]
+    }
+  ]
+}
