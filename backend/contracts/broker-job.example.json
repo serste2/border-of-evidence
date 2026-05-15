@@ -1,0 +1,13 @@
+{
+  "job_id": "job_001",
+  "job_type": "validation_job",
+  "created_at": "2026-05-15T00:00:00Z",
+  "entry_id": "entry_001",
+  "target_model": "gemini",
+  "payload": {
+    "title": "Example candidate",
+    "claim_text": "Example claim",
+    "source_url": "https://example.org/source"
+  },
+  "status": "pending"
+}
