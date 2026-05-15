@@ -7,6 +7,7 @@
   --panel: rgba(12, 13, 16, 0.58);
   --trad: #e06c45;
   --regen: #88d067;
+  --shared: #5daeb0;
   --purple: #7b4bd6;
   --yellow: #f0c95a;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -204,7 +205,8 @@ nav {
 
 .metadata-grid div,
 .cluster-card,
-.source-link {
+.source-link,
+.trigger-list {
   border: 1px solid var(--line);
   background: rgba(0,0,0,0.22);
   border-radius: 18px;
@@ -232,16 +234,49 @@ dd {
 }
 
 .cluster-card span,
-.cluster-card small {
+.cluster-card small,
+.trigger-list span {
   display: block;
   color: var(--muted);
   font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .cluster-card strong {
   display: block;
   margin: 4px 0;
   text-transform: uppercase;
+}
+
+.trigger-list {
+  margin-bottom: 12px;
+}
+
+.trigger-list div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.trigger-list button {
+  border: 1px solid rgba(243, 234, 216, 0.18);
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--cream);
+  font: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.element-note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .source-link {
@@ -251,37 +286,81 @@ dd {
   justify-content: space-between;
 }
 
-.hotspot {
+.map-element {
   position: absolute;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(255,255,255,0.24);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 999px;
-  padding: 9px 12px;
+  padding: 7px 9px;
   color: var(--cream);
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.42);
   backdrop-filter: blur(10px);
   cursor: pointer;
   font: inherit;
-  font-size: 12px;
-  box-shadow: 0 0 0 8px rgba(255,255,255,0.04);
+  font-size: 10px;
+  box-shadow: 0 0 0 7px rgba(255,255,255,0.025);
+  max-width: 190px;
 }
 
-.hotspot.regenerative {
-  border-color: rgba(136, 208, 103, 0.58);
+.element-label {
+  max-width: 135px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.hotspot.traditional {
+.element-pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--cream);
+  box-shadow: 0 0 18px currentColor;
+  flex: 0 0 auto;
+}
+
+.map-element.traditional {
   border-color: rgba(224, 108, 69, 0.58);
 }
 
-.hotspot.shared {
+.map-element.traditional .element-pulse {
+  color: var(--trad);
+  background: var(--trad);
+}
+
+.map-element.regenerative {
+  border-color: rgba(136, 208, 103, 0.58);
+}
+
+.map-element.regenerative .element-pulse {
+  color: var(--regen);
+  background: var(--regen);
+}
+
+.map-element.shared {
   border-color: rgba(93, 174, 176, 0.72);
 }
 
-.hotspot.active {
+.map-element.shared .element-pulse {
+  color: var(--shared);
+  background: var(--shared);
+}
+
+.map-element.seed {
+  opacity: 0.72;
+}
+
+.map-element.emerging {
+  opacity: 0.9;
+  border-style: dashed;
+}
+
+.map-element.active,
+.map-element:hover {
+  opacity: 1;
+  z-index: 15;
   box-shadow: 0 0 0 10px rgba(240, 201, 90, 0.12), 0 0 36px rgba(240, 201, 90, 0.42);
 }
 
@@ -325,5 +404,9 @@ dd {
   .side-panel {
     top: auto;
     bottom: 24px;
+  }
+
+  .element-label {
+    display: none;
   }
 }
