@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "test:json": "node src/scripts/validate-json.js"
+    "test:json": "node src/scripts/validate-json.js",
+    "test:news": "node src/scripts/test-news-validation.js"
   },
   "dependencies": {
     "cors": "latest",
