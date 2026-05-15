@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/serste2/border-of-evidence/schemas/source.schema.json",
+  "title": "Border of Evidence Source",
+  "type": "object",
+  "required": ["id", "name", "type", "access_method", "trust_tier", "enabled"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["fact_check", "scientific", "policy", "dataset", "news", "community", "sensor", "partner"]
+    },
+    "access_method": {
+      "type": "string",
+      "enum": ["api", "rss", "manual", "upload", "scraper", "webhook"]
+    },
+    "base_url": { "type": ["string", "null"] },
+    "trust_tier": {
+      "type": "string",
+      "enum": ["primary", "high", "medium", "community", "experimental"]
+    },
+    "update_frequency": { "type": ["string", "null"] },
+    "enabled": { "type": "boolean" },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}
