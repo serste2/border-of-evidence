@@ -5,18 +5,34 @@ import './styles.css';
 import entries from './mock/entries.json';
 import sceneState from './mock/scene-state.json';
 import artManifest from './assets/art/manifest.json';
+import mapElements from './assets/art/map-elements.seed.json';
 
-const hotspots = artManifest.hotspots;
+const statusOrder = {
+  seed: 1,
+  emerging: 2,
+  active: 3,
+  dense: 4,
+  corrected: 5,
+  archived: 6,
+};
 
-function getEntry(entryId) {
-  return entries.find((entry) => entry.id === entryId) || entries[0];
+function findEntryForElement(element) {
+  return entries.find((entry) => {
+    return entry.side_hint === element.side || entry.topic === element.data_triggers?.[0] || entry.topic === element.category;
+  });
+}
+
+function formatTrigger(trigger) {
+  return trigger.replaceAll('_', ' ');
 }
 
 function App() {
-  const [selectedHotspotId, setSelectedHotspotId] = useState('soil-health-carbon');
-  const selectedHotspot = hotspots.find((hotspot) => hotspot.id === selectedHotspotId) || hotspots[0];
-  const selectedEntry = getEntry(selectedHotspot.entryId);
+  const [selectedElementId, setSelectedElementId] = useState('river-border');
+  const selectedElement = mapElements.find((element) => element.id === selectedElementId) || mapElements[0];
+  const selectedEntry = findEntryForElement(selectedElement);
+
   const selectedCluster = useMemo(() => {
+    if (!selectedEntry) return null;
     return sceneState.clusters.find((cluster) => selectedEntry.entry_ids?.includes(cluster.id)) || sceneState.clusters.find((cluster) => cluster.topic === selectedEntry.topic);
   }, [selectedEntry]);
 
@@ -30,23 +46,24 @@ function App() {
           <div className="river-annotation">river border</div>
           <div className="fixed-pivot">fixed method</div>
 
-          {hotspots.map((hotspot) => (
+          {mapElements.map((element) => (
             <button
-              key={hotspot.id}
-              className={`hotspot ${hotspot.side} ${selectedHotspotId === hotspot.id ? 'active' : ''}`}
-              style={{ left: `${hotspot.x}%`, top: `${hotspot.y}%` }}
-              onClick={() => setSelectedHotspotId(hotspot.id)}
+              key={element.id}
+              className={`map-element ${element.side} ${element.visual_state} ${selectedElementId === element.id ? 'active' : ''}`}
+              style={{ left: `${element.position.x}%`, top: `${element.position.y}%` }}
+              onClick={() => setSelectedElementId(element.id)}
               type="button"
+              title={`${element.label} · ${element.category}`}
             >
-              {hotspot.side === 'shared' ? <Waves size={18} /> : <CircleDot size={18} />}
-              <span>{hotspot.label}</span>
+              <span className="element-pulse" />
+              <span className="element-label">{element.label}</span>
             </button>
           ))}
         </div>
 
         <header className="hud top-hud">
           <div>
-            <p className="eyebrow">vertical slice / MAP scaffold</p>
+            <p className="eyebrow">MAP 22 seed system / live element logic</p>
             <h1>Border of Evidence</h1>
           </div>
           <nav>
@@ -59,45 +76,59 @@ function App() {
 
         <aside className="hud side-panel">
           <div className="panel-kicker">
-            {selectedHotspot.side === 'shared' ? <Waves size={16} /> : selectedEntry.side_hint === 'regenerative' ? <Leaf size={16} /> : <ShieldAlert size={16} />}
-            {selectedHotspot.side === 'shared' ? 'river / method' : selectedEntry.side_hint}
+            {selectedElement.side === 'shared' ? <Waves size={16} /> : selectedElement.side === 'regenerative' ? <Leaf size={16} /> : <ShieldAlert size={16} />}
+            {selectedElement.side} / {selectedElement.visual_state}
           </div>
-          <h2>{selectedEntry.title}</h2>
-          <p className="claim">{selectedEntry.claim_text}</p>
+
+          <h2>{selectedElement.label}</h2>
+          <p className="claim">{selectedElement.description}</p>
 
           <dl className="metadata-grid">
             <div>
-              <dt>event</dt>
-              <dd>{selectedEntry.event_type}</dd>
+              <dt>category</dt>
+              <dd>{selectedElement.category.replaceAll('_', ' ')}</dd>
             </div>
             <div>
-              <dt>topic</dt>
-              <dd>{selectedEntry.topic}</dd>
+              <dt>zone</dt>
+              <dd>{selectedElement.zone}</dd>
             </div>
             <div>
-              <dt>quality</dt>
-              <dd>{Math.round(selectedEntry.evidence_quality * 100)}%</dd>
+              <dt>state</dt>
+              <dd>{selectedElement.visual_state}</dd>
             </div>
             <div>
-              <dt>confidence</dt>
-              <dd>{Math.round(selectedEntry.confidence * 100)}%</dd>
+              <dt>order</dt>
+              <dd>{statusOrder[selectedElement.visual_state] || 0}</dd>
             </div>
           </dl>
+
+          <div className="trigger-list" aria-label="data triggers">
+            <span>data triggers</span>
+            <div>
+              {selectedElement.data_triggers.map((trigger) => (
+                <button key={trigger} type="button">{formatTrigger(trigger)}</button>
+              ))}
+            </div>
+          </div>
 
           <div className="cluster-card">
             <Trees size={18} />
             <div>
-              <span>scene effect</span>
-              <strong>{selectedEntry.visual_effect}</strong>
-              <small>{selectedCluster?.id || selectedHotspot.id}</small>
+              <span>linked evidence logic</span>
+              <strong>{selectedEntry?.visual_effect || 'waiting for data'}</strong>
+              <small>{selectedCluster?.id || selectedEntry?.id || selectedElement.id}</small>
             </div>
           </div>
 
-          <a className="source-link" href={selectedEntry.source_url} target="_blank" rel="noreferrer">
-            <Archive size={16} />
-            source / archive entry
-            <ExternalLink size={14} />
-          </a>
+          <p className="element-note">{selectedElement.notes}</p>
+
+          {selectedEntry ? (
+            <a className="source-link" href={selectedEntry.source_url} target="_blank" rel="noreferrer">
+              <Archive size={16} />
+              source / archive entry
+              <ExternalLink size={14} />
+            </a>
+          ) : null}
         </aside>
 
         <footer className="hud bottom-hud">
@@ -106,16 +137,16 @@ function App() {
             <strong>{artManifest.border.type}</strong>
           </div>
           <div>
-            <span>base art</span>
-            <strong>{artManifest.base.status}</strong>
+            <span>target state</span>
+            <strong>MAP 22</strong>
           </div>
           <div>
-            <span>min visible share</span>
-            <strong>{Math.round(sceneState.pivot.min_visible_share * 100)}%</strong>
+            <span>seed elements</span>
+            <strong>{mapElements.length}</strong>
           </div>
           <div>
-            <span>hotspots</span>
-            <strong>{hotspots.length}</strong>
+            <span>selected</span>
+            <strong>{selectedElement.side}</strong>
           </div>
         </footer>
       </section>
