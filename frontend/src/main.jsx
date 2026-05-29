@@ -8,6 +8,15 @@ import sceneState from './mock/scene-state.json';
 import artManifest from './assets/art/manifest.json';
 import mapElements from './assets/art/map-elements.v1.json';
 
+const RANGE_TO_MS = {
+  '1_month': 30 * 24 * 60 * 60 * 1000,
+  '3_months': 90 * 24 * 60 * 60 * 1000,
+  '6_months': 180 * 24 * 60 * 60 * 1000,
+  '12_months': 365 * 24 * 60 * 60 * 1000,
+  '24_months': 730 * 24 * 60 * 60 * 1000,
+  '10_years': 3650 * 24 * 60 * 60 * 1000,
+};
+
 const statusOrder = {
   seed: 1,
   emerging: 2,
@@ -26,6 +35,16 @@ function findEntryForElement(element) {
   });
 }
 
+function findElementForEntry(entry) {
+  const exactTriggerMatch = mapElements.find((element) => element.data_triggers?.includes(entry.topic));
+  if (exactTriggerMatch) return exactTriggerMatch;
+
+  const categoryMatch = mapElements.find((element) => element.category === entry.topic);
+  if (categoryMatch) return categoryMatch;
+
+  return mapElements.find((element) => element.side === entry.side_hint) || mapElements[0];
+}
+
 function formatTrigger(trigger) {
   return trigger.replaceAll('_', ' ');
 }
@@ -39,16 +58,120 @@ function getArchivedElementCount(archiveArrangement, elementId) {
   return archiveArrangement?.element_counts?.[elementId] || 0;
 }
 
+function buildLocalArchiveArrangement(range = '1_month') {
+  const now = Date.now();
+  const rangeMs = RANGE_TO_MS[range] || RANGE_TO_MS['1_month'];
+  const dateRange = {
+    from: new Date(now - rangeMs).toISOString(),
+    to: new Date(now).toISOString(),
+  };
+
+  const archiveEntries = entries
+    .filter((entry) => {
+      const publishedAt = new Date(entry.published_at).getTime();
+      return Number.isNaN(publishedAt) || publishedAt >= now - rangeMs;
+    })
+    .map((entry) => {
+      const element = findElementForEntry(entry);
+      return {
+        id: entry.id,
+        element_id: element.id,
+        title: entry.title,
+        url: entry.source_url,
+        source: entry.source_name,
+        published_at: entry.published_at,
+        summary: entry.summary,
+        reason: entry.claim_text || entry.summary,
+        evidence_score: entry.evidence_quality,
+        domains: entry.tags || [],
+        trigger_type: entry.event_type,
+      };
+    });
+
+  const elementCounts = archiveEntries.reduce((counts, entry) => {
+    counts[entry.element_id] = (counts[entry.element_id] || 0) + 1;
+    return counts;
+  }, {});
+
+  const activeElements = Object.keys(elementCounts);
+
+  return {
+    range,
+    generatedAt: new Date().toISOString(),
+    date_range: dateRange,
+    summary: {
+      entries: archiveEntries.length,
+      active_elements: activeElements.length,
+      warning: archiveApiUrl ? null : 'static_mock_archive',
+    },
+    elements: activeElements.map((elementId) => ({
+      element_id: elementId,
+      count: elementCounts[elementId],
+      scraped_links: archiveEntries
+        .filter((entry) => entry.element_id === elementId)
+        .map((entry) => ({
+          id: entry.id,
+          title: entry.title,
+          url: entry.url,
+          source: entry.source,
+          published_at: entry.published_at,
+          evidenceScore: entry.evidence_score,
+          trigger_type: entry.trigger_type,
+          summary: entry.summary,
+          reason: entry.reason,
+          domains: entry.domains,
+        })),
+    })),
+    entries: archiveEntries,
+    element_counts: elementCounts,
+    active_elements: activeElements,
+    clusters: activeElements.map((elementId) => ({
+      id: `local-cluster-${elementId}`,
+      element_id: elementId,
+      count: elementCounts[elementId],
+      entries: archiveEntries.filter((entry) => entry.element_id === elementId).map((entry) => entry.id),
+    })),
+    scene_state: {
+      active_elements: activeElements,
+      density_by_element: elementCounts,
+      generated_at: new Date().toISOString(),
+    },
+  };
+}
+
+function entriesToLiveEvents(archiveEntries, generatedAt, source = 'static_archive') {
+  return archiveEntries.slice(0, 10).map((entry) => ({
+    trigger: 'archive_arrangement',
+    element_id: entry.element_id,
+    timestamp: generatedAt,
+    source,
+    payload: {
+      title: entry.title,
+      url: entry.url,
+      source: entry.source,
+      published_at: entry.published_at,
+      summary: entry.summary,
+      reason: entry.reason,
+      evidenceScore: entry.evidence_score,
+      domains: entry.domains,
+      trigger_type: entry.trigger_type,
+    },
+  }));
+}
+
 function App() {
   const [selectedElementId, setSelectedElementId] = useState('river-central-axis');
   const [hoveredElementId, setHoveredElementId] = useState(null);
   const [pulseElementId, setPulseElementId] = useState(null);
-  const [liveStatus, setLiveStatus] = useState(liveEventsUrl ? 'connecting' : 'offline');
-  const [liveEvents, setLiveEvents] = useState([]);
+  const [liveStatus, setLiveStatus] = useState(liveEventsUrl ? 'connecting' : 'static');
+  const [liveEvents, setLiveEvents] = useState(() => {
+    const localArchive = buildLocalArchiveArrangement('1_month');
+    return entriesToLiveEvents(localArchive.entries, localArchive.generatedAt);
+  });
   const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
   const [currentRange, setCurrentRange] = useState('1_month');
   const [isArchiveLoading, setIsArchiveLoading] = useState(false);
-  const [archiveArrangement, setArchiveArrangement] = useState(null);
+  const [archiveArrangement, setArchiveArrangement] = useState(() => buildLocalArchiveArrangement('1_month'));
   const [archiveError, setArchiveError] = useState(null);
   const pulseQueueRef = useRef([]);
   const pulseTimeoutRef = useRef(null);
@@ -64,7 +187,7 @@ function App() {
 
   useEffect(() => {
     if (!liveEventsUrl) {
-      setLiveStatus('offline');
+      setLiveStatus('static');
       return undefined;
     }
 
@@ -115,7 +238,10 @@ function App() {
     setArchiveError(null);
 
     if (!archiveApiUrl) {
-      setArchiveError('archive backend offline');
+      const localArchive = buildLocalArchiveArrangement(nextRange);
+      setArchiveArrangement(localArchive);
+      setLiveEvents(entriesToLiveEvents(localArchive.entries, localArchive.generatedAt));
+      setLiveStatus('static');
       return;
     }
 
@@ -133,23 +259,7 @@ function App() {
 
       setArchiveArrangement(payload);
       setLiveEvents((currentEvents) => [
-        ...payload.entries.slice(0, 10).map((entry) => ({
-          trigger: 'archive_arrangement',
-          element_id: entry.element_id,
-          timestamp: payload.generatedAt,
-          source: 'archive_query',
-          payload: {
-            title: entry.title,
-            url: entry.url,
-            source: entry.source,
-            published_at: entry.published_at,
-            summary: entry.summary,
-            reason: entry.reason,
-            evidenceScore: entry.evidence_score,
-            domains: entry.domains,
-            trigger_type: entry.trigger_type,
-          },
-        })),
+        ...entriesToLiveEvents(payload.entries, payload.generatedAt, 'archive_query'),
         ...currentEvents,
       ].slice(0, 10));
     } catch (error) {
